@@ -1,28 +1,27 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Gnb />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Gnb from "@/components/navigation/Gnb";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  components: { Gnb },
+};
 </script>
 
 <style>
+html,
+body {
+  background-color: #1e1e1e;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  font-family: "Noto Sans KR", sans-serif;
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  display: flex;
 }
 </style>
