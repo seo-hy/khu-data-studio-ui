@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home";
+import DataManage from "@/views/manage/DataManage";
 import Visualize from "@/views/status/Visualize";
 import Statistics from "@/views/status/Statistics";
 import Cleaning from "@/views/preprocessing/Cleaning";
@@ -14,6 +15,11 @@ const routes = [
     path: "/",
     name: "home",
     component: Home,
+  },
+  {
+    path: "/manage/data-manage",
+    name: "dataManage",
+    component: DataManage,
   },
   {
     path: "/status/visualize",

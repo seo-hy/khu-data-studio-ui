@@ -1,40 +1,68 @@
 <template>
   <div class="main">
-    <router-link :to="{ name: 'Home' }" class="logo">
-      KHU Data Studio
+    <router-link
+      :to="{ name: 'home' }"
+      class="title"
+      @click.native="openMenu('home')"
+    >
+      <div class="logo">
+        <img src="@/assets/images/logo.png" />
+      </div>
+      <div>KHU Data Studio</div>
     </router-link>
     <div class="menu-title">
       <font-awesome-icon icon="fa-regular fa-folder-open" />
       학습 데이터
     </div>
-    <router-link :to="{ name: 'Data' }" class="menu">
-      데이터 관리
+    <router-link
+      v-for="menu in menus.manage"
+      :key="menu.name"
+      :to="{ name: menu.name }"
+      class="menu"
+      @click.native="openMenu(menu.name)"
+    >
+      <font-awesome-icon
+        icon="fa-solid fa-chevron-right"
+        v-if="currentMenu === menu.name"
+        size="xs"
+      ></font-awesome-icon>
+      {{ menu.title }}
     </router-link>
     <div class="menu-title">
       <font-awesome-icon icon="fa-solid fa-chart-column" />
       데이터 현황
     </div>
     <router-link
-      :to="{ name: menuList.visualize.name }"
+      v-for="menu in menus.status"
+      :key="menu.name"
+      :to="{ name: menu.name }"
       class="menu"
+      @click.native="openMenu(menu.name)"
     >
-      {{ menuList.visualize.title }}
-    </router-link>
-    <router-link :to="{ name: 'Data' }" class="menu">
-      데이터 통계
+      <font-awesome-icon
+        icon="fa-solid fa-chevron-right"
+        v-if="currentMenu === menu.name"
+        size="xs"
+      ></font-awesome-icon>
+      {{ menu.title }}
     </router-link>
     <div class="menu-title">
       <font-awesome-icon icon="fa-solid fa-wrench" />
       데이터 전처리
     </div>
-    <router-link :to="{ name: 'Data' }" class="menu">
-      데이터 정제
-    </router-link>
-    <router-link :to="{ name: 'Data' }" class="menu">
-      데이터 통합
-    </router-link>
-    <router-link :to="{ name: 'Data' }" class="menu">
-      데이터 증강
+    <router-link
+      v-for="menu in menus.preprocessing"
+      :key="menu.name"
+      :to="{ name: menu.name }"
+      class="menu"
+      @click.native="openMenu(menu.name)"
+    >
+      <font-awesome-icon
+        icon="fa-solid fa-chevron-right"
+        v-if="currentMenu === menu.name"
+        size="xs"
+      ></font-awesome-icon>
+      {{ menu.title }}
     </router-link>
   </div>
 </template>
@@ -43,20 +71,45 @@
 export default {
   data() {
     return {
-      menuList: {
-        home: {},
-        visualize: {
-          name: "visualize",
-          title: "시각화",
-          isOpen: false,
-        },
-        statistics: {
-          name: "statistics",
-          title: "통계",
-          isOpen: false,
-        },
+      menus: {
+        manage: [
+          {
+            name: "dataManage",
+            title: "데이터 관리",
+          },
+        ],
+        status: [
+          {
+            name: "visualize",
+            title: "시각화",
+          },
+          {
+            name: "statistics",
+            title: "통계",
+          },
+        ],
+        preprocessing: [
+          {
+            name: "cleaning",
+            title: "정제",
+          },
+          {
+            name: "integration",
+            title: "결합",
+          },
+          {
+            name: "augmentation",
+            title: "증강",
+          },
+        ],
       },
+      currentMenu: "home",
     };
+  },
+  methods: {
+    openMenu(name) {
+      this.currentMenu = name;
+    },
   },
 };
 </script>
@@ -70,18 +123,26 @@ export default {
   box-shadow: 4px 0px 30px 3px rgba(0, 0, 0, 0.26);
   justify-content: center;
 }
-.logo {
+
+.title {
   margin-top: 20px;
-  display: block;
   text-decoration: none;
   color: #d8d8d8;
   width: 100%;
   text-align: center;
-  font-size: 21px;
-  text-align: center;
+  font-size: 20px;
   font-family: "Noto Sans Mono", monospace;
   letter-spacing: -0.5px;
   word-spacing: -4px;
+  display: flex;
+}
+.logo {
+  padding-top: 1.5px;
+  padding-right: 5px;
+  padding-left: 10px;
+}
+.logo > img {
+  width: 25px;
 }
 .menu-title {
   color: #8fa8c4;
@@ -89,13 +150,16 @@ export default {
   width: 100%;
   font-weight: 400;
   padding-top: 30px;
-  padding-left: 20px;
+  padding-left: 30px;
   padding-bottom: 5px;
 }
 .menu-title > svg {
-  padding-right: 3px;
+  padding-right: 2px;
+  padding-bottom: 1px;
 }
-
+.menu > svg {
+  padding-bottom: 1px;
+}
 .menu {
   display: block;
   text-decoration: none;
@@ -103,12 +167,12 @@ export default {
   font-size: 15px;
   font-weight: 300;
   width: 100%;
-  padding-left: 45px;
+  padding-left: 50px;
   padding-top: 8px;
   cursor: pointer;
   transition: all 0.5s;
 }
 .menu:hover {
-  color: #8fa8c4;
+  color: #9e9e9e;
 }
 </style>
