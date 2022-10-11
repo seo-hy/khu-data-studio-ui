@@ -95,7 +95,7 @@ export default {
           },
           {
             name: "integration",
-            title: "결합",
+            title: "통합",
           },
           {
             name: "augmentation",
@@ -125,7 +125,7 @@ export default {
 }
 
 .title {
-  margin-top: 20px;
+  margin-top: 30px;
   text-decoration: none;
   color: #d8d8d8;
   width: 100%;
@@ -135,6 +135,7 @@ export default {
   letter-spacing: -0.5px;
   word-spacing: -4px;
   display: flex;
+  margin-bottom: 10px;
 }
 .logo {
   padding-top: 1.5px;
@@ -145,12 +146,12 @@ export default {
   width: 25px;
 }
 .menu-title {
-  color: #8fa8c4;
-  font-size: 14px;
+  color: #7999c3;
+  font-size: 16px;
   width: 100%;
   font-weight: 400;
   padding-top: 30px;
-  padding-left: 30px;
+  padding-left: 25px;
   padding-bottom: 5px;
 }
 .menu-title > svg {
