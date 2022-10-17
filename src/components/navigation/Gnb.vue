@@ -74,8 +74,8 @@ export default {
       menus: {
         manage: [
           {
-            name: "dataManage",
-            title: "데이터 관리",
+            name: "datasetManage",
+            title: "데이터셋 관리",
           },
         ],
         status: [

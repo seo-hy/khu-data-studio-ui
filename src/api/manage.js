@@ -2,13 +2,13 @@ import axios from "axios";
 
 const manage = {
   get(id) {
-    return axios.get("/manage/database/" + id);
+    return axios.get("/manage/dataset/" + id);
   },
   getList() {
-    return axios.get("/manage/database");
+    return axios.get("/manage/dataset");
   },
   save({
-    dataName,
+    name,
     host,
     port,
     db,
@@ -16,8 +16,8 @@ const manage = {
     password,
     tableName,
   }) {
-    return axios.post("/manage/database", {
-      dataName,
+    return axios.post("/manage/dataset", {
+      name,
       host,
       port,
       db,
@@ -34,7 +34,7 @@ const manage = {
     db,
     tableName,
   }) {
-    return axios.post("/manage/database/connect-test", {
+    return axios.post("/manage/dataset/connect-test", {
       host,
       port,
       db,
@@ -42,6 +42,9 @@ const manage = {
       password,
       tableName,
     });
+  },
+  getData(id) {
+    return axios.get("/manage/dataset/" + id + "/data");
   },
 };
 

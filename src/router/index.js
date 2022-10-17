@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home";
-import DataManage from "@/views/manage/DataManage";
+import DatasetManage from "@/views/manage/DatasetManage";
 import Visualize from "@/views/status/Visualize";
 import Statistics from "@/views/status/Statistics";
 import Cleaning from "@/views/preprocessing/Cleaning";
@@ -17,9 +17,9 @@ const routes = [
     component: Home,
   },
   {
-    path: "/manage/data-manage",
-    name: "dataManage",
-    component: DataManage,
+    path: "/manage/dataset-manage",
+    name: "datasetManage",
+    component: DatasetManage,
   },
   {
     path: "/status/visualize",

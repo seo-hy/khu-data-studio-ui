@@ -6,9 +6,16 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import Gnb from "@/components/navigation/Gnb";
 export default {
   components: { Gnb },
+  methods: {
+    ...mapActions("manage", ["FETCH_TABLE_INFO_LIST"]),
+  },
+  created() {
+    this.FETCH_TABLE_INFO_LIST();
+  },
 };
 </script>
 
