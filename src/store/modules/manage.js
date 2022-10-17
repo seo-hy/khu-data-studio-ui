@@ -1,42 +1,34 @@
 import manage from "@/api/manage";
 
 const state = {
-  databaseList: [],
+  tableInfoList: [],
 };
 
 const getters = {
-  getDatabaseList(state) {
-    return state.databaseList;
+  getTableInfoList(state) {
+    return state.tableInfoList;
   },
 };
 
 const mutations = {
-  SET_DATABASE_LIST(state, payload) {
-    state.databaseList = payload;
+  SET_TABLE_INFO_LIST(state, payload) {
+    state.tableInfoList = payload;
   },
 };
 
 const actions = {
-  GET_LIST(context) {
+  FETCH_TABLE_INFO_LIST(context) {
     return manage.getList().then((res) => {
-      context.commit("setDatabaseList", res.data);
+      context.commit("SET_TABLE_INFO_LIST", res.data);
     });
   },
-  SAVE(
+  SAVE_TABLE_INFO(
     context,
-    {
-      dataName,
-      host,
-      port,
-      db,
-      userName,
-      password,
-      tableName,
-    }
+    { name, host, port, db, userName, password, tableName }
   ) {
     return manage
       .save({
-        dataName,
+        name,
         host,
         port,
         db,
@@ -65,6 +57,11 @@ const actions = {
         return res.data;
       })
       .catch(() => {});
+  },
+  FETCH_TABLE_DATA(context, id) {
+    return manage.getData(id).then((res) => {
+      return res.data;
+    });
   },
 };
 
