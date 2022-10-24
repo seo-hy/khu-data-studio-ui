@@ -15,15 +15,13 @@
       학습 데이터
     </div>
     <router-link
-      v-for="menu in menus.manage"
+      v-for="menu in menus.dataset"
       :key="menu.name"
       :to="{ name: menu.name }"
       class="menu"
-      @click.native="openMenu(menu.name)"
     >
       <font-awesome-icon
         icon="fa-solid fa-chevron-right"
-        v-if="currentMenu === menu.name"
         size="xs"
       ></font-awesome-icon>
       {{ menu.title }}
@@ -37,11 +35,9 @@
       :key="menu.name"
       :to="{ name: menu.name }"
       class="menu"
-      @click.native="openMenu(menu.name)"
     >
       <font-awesome-icon
         icon="fa-solid fa-chevron-right"
-        v-if="currentMenu === menu.name"
         size="xs"
       ></font-awesome-icon>
       {{ menu.title }}
@@ -55,11 +51,9 @@
       :key="menu.name"
       :to="{ name: menu.name }"
       class="menu"
-      @click.native="openMenu(menu.name)"
     >
       <font-awesome-icon
         icon="fa-solid fa-chevron-right"
-        v-if="currentMenu === menu.name"
         size="xs"
       ></font-awesome-icon>
       {{ menu.title }}
@@ -72,10 +66,10 @@ export default {
   data() {
     return {
       menus: {
-        manage: [
+        dataset: [
           {
-            name: "dataManage",
-            title: "데이터 관리",
+            name: "manage",
+            title: "데이터셋 관리",
           },
         ],
         status: [
@@ -95,7 +89,7 @@ export default {
           },
           {
             name: "integration",
-            title: "결합",
+            title: "통합",
           },
           {
             name: "augmentation",
@@ -125,7 +119,7 @@ export default {
 }
 
 .title {
-  margin-top: 20px;
+  margin-top: 30px;
   text-decoration: none;
   color: #d8d8d8;
   width: 100%;
@@ -135,6 +129,7 @@ export default {
   letter-spacing: -0.5px;
   word-spacing: -4px;
   display: flex;
+  margin-bottom: 10px;
 }
 .logo {
   padding-top: 1.5px;
@@ -145,12 +140,12 @@ export default {
   width: 25px;
 }
 .menu-title {
-  color: #8fa8c4;
-  font-size: 14px;
+  color: #7999c3;
+  font-size: 16px;
   width: 100%;
   font-weight: 400;
   padding-top: 30px;
-  padding-left: 30px;
+  padding-left: 25px;
   padding-bottom: 5px;
 }
 .menu-title > svg {
@@ -158,7 +153,7 @@ export default {
   padding-bottom: 1px;
 }
 .menu > svg {
-  padding-bottom: 1px;
+  display: none;
 }
 .menu {
   display: block;
@@ -174,5 +169,10 @@ export default {
 }
 .menu:hover {
   color: #9e9e9e;
+}
+
+.router-link-active svg {
+  display: inline-block;
+  padding-bottom: 1px;
 }
 </style>

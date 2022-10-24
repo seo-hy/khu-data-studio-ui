@@ -6,16 +6,23 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import Gnb from "@/components/navigation/Gnb";
 export default {
   components: { Gnb },
+  methods: {
+    ...mapActions("dataset", ["FETCH_DATASETS"]),
+  },
+  created() {
+    this.FETCH_DATASETS();
+  },
 };
 </script>
 
 <style>
 html,
 body {
-  background-color: #1e1e1e;
+  background-color: #252525;
   margin: 0;
   height: 100vh;
   width: 100vw;
