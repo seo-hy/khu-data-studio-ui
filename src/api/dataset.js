@@ -70,7 +70,7 @@ const dataset = {
   },
   getData(datasetId, limit) {
     return axios.get(
-      "/dataset-api/datasets" +
+      "/dataset-api/datasets/" +
         datasetId +
         "/data?limit=" +
         limit

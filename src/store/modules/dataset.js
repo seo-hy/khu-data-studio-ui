@@ -35,9 +35,47 @@ const actions = {
         return res.data;
       });
   },
+  FETCH_DATASET(context, datasetId) {
+    return dataset.get(datasetId).then((res) => {
+      return res.data;
+    });
+  },
   FETCH_DATASETS(context) {
     return dataset.getList().then((res) => {
       context.commit("SET_DATASETS", res.data);
+    });
+  },
+  UPDATE_DATASET(
+    context,
+    {
+      datasetId,
+      name,
+      host,
+      port,
+      db,
+      userName,
+      password,
+      tableName,
+    }
+  ) {
+    return dataset
+      .update({
+        datasetId,
+        name,
+        host,
+        port,
+        db,
+        userName,
+        password,
+        tableName,
+      })
+      .then((res) => {
+        return res.data;
+      });
+  },
+  DELETE_DATASET(context, { datasetId }) {
+    return dataset.delete(datasetId).then((res) => {
+      return res;
     });
   },
   CONNECT(
@@ -58,7 +96,7 @@ const actions = {
       })
       .catch(() => {});
   },
-  FETCH_DATA(context, datasetId, limit) {
+  FETCH_DATA(context, { datasetId, limit }) {
     return dataset.getData(datasetId, limit).then((res) => {
       return res.data;
     });

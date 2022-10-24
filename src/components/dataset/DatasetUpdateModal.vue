@@ -3,7 +3,7 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div class="modal-header">
-          <div class="title">데이터셋 등록</div>
+          <div class="title">데이터셋 수정</div>
           <div class="description">
             데이터베이스 테이블 접속 정보를 입력하세요.
           </div>
@@ -91,7 +91,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="save-btn" @click="save">
+          <button class="update-btn" @click="update">
             저장
           </button>
           <button class="close-btn" @click="close">
@@ -106,30 +106,32 @@
 <script>
 import { mapActions } from "vuex";
 export default {
+  props: ["dataset"],
   data() {
     return {
       isFailed: false,
       isSucceeded: false,
-      name: "",
-      host: "",
-      port: "",
-      db: "",
-      userName: "",
-      password: "",
-      tableName: "",
+      name: this.dataset.name,
+      host: this.dataset.host,
+      port: this.dataset.port,
+      db: this.dataset.db,
+      userName: this.dataset.userName,
+      password: this.dataset.password,
+      tableName: this.dataset.tableName,
     };
   },
   methods: {
     ...mapActions("dataset", [
       "FETCH_DATASETS",
-      "SAVE_DATASET",
+      "UPDATE_DATASET",
       "CONNECT",
     ]),
     close() {
       this.$emit("close");
     },
-    save() {
-      this.SAVE_DATASET({
+    update() {
+      this.UPDATE_DATASET({
+        datasetId: this.dataset.id,
         name: this.name,
         host: this.host,
         port: this.port,
@@ -285,10 +287,10 @@ input {
   transition: all 0.5s;
 }
 
-.save-btn {
+.update-btn {
   background-color: #3f8ae2;
 }
-.save-btn:hover {
+.update-btn:hover {
   background-color: #2f6cb1;
 }
 

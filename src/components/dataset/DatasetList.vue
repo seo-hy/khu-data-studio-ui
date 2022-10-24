@@ -20,16 +20,35 @@
           <td>{{ dataset.db }}</td>
           <td>{{ dataset.tableName }}</td>
           <td class="action">
-            <button class="show-btn">
+            <button
+              class="show-btn"
+              @click="
+                openDatasetPreviewModal(
+                  dataset.id,
+                  dataset.name
+                )
+              "
+            >
               <font-awesome-icon
                 icon="fa-solid fa-table"
               />열람
             </button>
-            <button class="edit-btn">
+            <button
+              class="edit-btn"
+              @click="openDatasetUpdateModal(dataset.id)"
+            >
               <font-awesome-icon icon="fa-solid fa-pen" />
               수정
             </button>
-            <button class="delete-btn">
+            <button
+              class="delete-btn"
+              @click="
+                openDatasetDeleteModal(
+                  dataset.id,
+                  dataset.name
+                )
+              "
+            >
               <font-awesome-icon
                 icon="fa-solid fa-trash-can"
               />삭제
@@ -38,12 +57,75 @@
         </tr>
       </tbody>
     </table>
+    <DatasetUpdateModal
+      v-if="showDatasetUpdateModal"
+      @close="closeDatasetUpdateModal"
+      :dataset="dataset"
+    />
+    <DatasetDeleteModal
+      v-if="showDatasetDeleteModal"
+      @close="closeDatasetDeleteModal"
+      :datasetId="datasetId"
+      :datasetName="datasetName"
+    />
+    <DatasetPreviewModal
+      v-if="showDatasetPreviewModal"
+      @close="closeDatasetPreviewModal"
+      :datasetId="datasetId"
+      :datasetName="datasetName"
+    />
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import DatasetUpdateModal from "@/components/dataset/DatasetUpdateModal";
+import DatasetDeleteModal from "@/components/dataset/DatasetDeleteModal";
+import DatasetPreviewModal from "@/components/dataset/DatasetPreviewModal";
+import { mapGetters, mapActions } from "vuex";
 export default {
+  components: {
+    DatasetUpdateModal,
+    DatasetDeleteModal,
+    DatasetPreviewModal,
+  },
+  data() {
+    return {
+      showDatasetUpdateModal: false,
+      showDatasetDeleteModal: false,
+      showDatasetPreviewModal: false,
+      dataset: {},
+      datasetId: 0,
+      datasetName: "",
+    };
+  },
+  methods: {
+    ...mapActions("dataset", ["FETCH_DATASET"]),
+    openDatasetUpdateModal(datasetId) {
+      this.FETCH_DATASET(datasetId).then((res) => {
+        this.dataset = res;
+        this.showDatasetUpdateModal = true;
+      });
+    },
+    closeDatasetUpdateModal() {
+      this.showDatasetUpdateModal = false;
+    },
+    openDatasetDeleteModal(datasetId, datasetName) {
+      this.datasetId = datasetId;
+      this.datasetName = datasetName;
+      this.showDatasetDeleteModal = true;
+    },
+    closeDatasetDeleteModal() {
+      this.showDatasetDeleteModal = false;
+    },
+    openDatasetPreviewModal(datasetId, datasetName) {
+      this.datasetId = datasetId;
+      this.datasetName = datasetName;
+      this.showDatasetPreviewModal = true;
+    },
+    closeDatasetPreviewModal() {
+      this.showDatasetPreviewModal = false;
+    },
+  },
   computed: {
     ...mapGetters("dataset", ["getDatasets"]),
   },
