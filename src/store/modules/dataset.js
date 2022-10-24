@@ -1,32 +1,27 @@
-import manage from "@/api/manage";
+import dataset from "@/api/dataset";
 
 const state = {
-  tableInfoList: [],
+  datasets: [],
 };
 
 const getters = {
-  getTableInfoList(state) {
-    return state.tableInfoList;
+  getDatasets(state) {
+    return state.datasets;
   },
 };
 
 const mutations = {
-  SET_TABLE_INFO_LIST(state, payload) {
-    state.tableInfoList = payload;
+  SET_DATASETS(state, payload) {
+    state.datasets = payload;
   },
 };
 
 const actions = {
-  FETCH_TABLE_INFO_LIST(context) {
-    return manage.getList().then((res) => {
-      context.commit("SET_TABLE_INFO_LIST", res.data);
-    });
-  },
-  SAVE_TABLE_INFO(
+  SAVE_DATASET(
     context,
     { name, host, port, db, userName, password, tableName }
   ) {
-    return manage
+    return dataset
       .save({
         name,
         host,
@@ -40,12 +35,17 @@ const actions = {
         return res.data;
       });
   },
-  CONNECT_TEST(
+  FETCH_DATASETS(context) {
+    return dataset.getList().then((res) => {
+      context.commit("SET_DATASETS", res.data);
+    });
+  },
+  CONNECT(
     context,
     { host, port, db, userName, password, tableName }
   ) {
-    return manage
-      .connectTest({
+    return dataset
+      .connect({
         host,
         port,
         db,
@@ -58,8 +58,8 @@ const actions = {
       })
       .catch(() => {});
   },
-  FETCH_TABLE_DATA(context, id) {
-    return manage.getData(id).then((res) => {
+  FETCH_DATA(context, datasetId, limit) {
+    return dataset.getData(datasetId, limit).then((res) => {
       return res.data;
     });
   },

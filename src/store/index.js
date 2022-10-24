@@ -1,12 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import manage from "./modules/manage";
+import dataset from "./modules/dataset";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
-    manage,
+    dataset,
   },
 });
 

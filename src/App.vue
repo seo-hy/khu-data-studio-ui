@@ -11,10 +11,10 @@ import Gnb from "@/components/navigation/Gnb";
 export default {
   components: { Gnb },
   methods: {
-    ...mapActions("manage", ["FETCH_TABLE_INFO_LIST"]),
+    ...mapActions("dataset", ["FETCH_DATASETS"]),
   },
   created() {
-    this.FETCH_TABLE_INFO_LIST();
+    this.FETCH_DATASETS();
   },
 };
 </script>

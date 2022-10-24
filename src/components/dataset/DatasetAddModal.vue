@@ -3,11 +3,14 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div class="modal-header">
-          <div>데이터베이스 테이블 등록</div>
+          <div class="title">데이터셋 등록</div>
+          <div class="description">
+            데이터베이스 테이블 접속 정보를 입력하세요.
+          </div>
         </div>
         <div class="modal-body">
           <div class="input">
-            <label for="name">Data Name</label>
+            <label for="name">Dataset Name</label>
             <input
               type="text"
               id="name"
@@ -70,23 +73,21 @@
             />
           </div>
           <div class="test">
-            <button class="test-btn" @click="connectTest">
+            <button class="test-btn" @click="connect">
               Test Connection
             </button>
-            <Transition>
-              <div
-                class="test-msg test-succeeded"
-                v-if="isSucceeded"
-              >
-                Succeeded
-              </div>
-              <div
-                class="test-msg test-failed"
-                v-if="isFailed"
-              >
-                Failed
-              </div>
-            </Transition>
+            <div
+              class="test-msg test-succeeded"
+              v-if="isSucceeded"
+            >
+              Succeeded
+            </div>
+            <div
+              class="test-msg test-failed"
+              v-if="isFailed"
+            >
+              Failed
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -119,16 +120,16 @@ export default {
     };
   },
   methods: {
-    ...mapActions("manage", [
-      "FETCH_TABLE_INFO_LIST",
-      "SAVE_TABLE_INFO",
-      "CONNECT_TEST",
+    ...mapActions("dataset", [
+      "FETCH_DATASETS",
+      "SAVE_DATASET",
+      "CONNECT",
     ]),
     close() {
       this.$emit("close");
     },
     save() {
-      this.SAVE_TABLE_INFO({
+      this.SAVE_DATASET({
         name: this.name,
         host: this.host,
         port: this.port,
@@ -137,15 +138,15 @@ export default {
         password: this.password,
         tableName: this.tableName,
       }).then(() => {
-        this.FETCH_TABLE_INFO_LIST();
+        this.FETCH_DATASETS();
       });
       this.$emit("close");
     },
-    connectTest() {
+    connect() {
       console.log(this.userName);
       this.isSucceeded = false;
       this.isFailed = false;
-      this.CONNECT_TEST({
+      this.CONNECT({
         host: this.host,
         port: this.port,
         db: this.db,
@@ -204,6 +205,12 @@ export default {
   font-size: 18px;
 }
 
+.description {
+  font-size: 15px;
+  color: #e8e8e8c2;
+  font-weight: 300;
+}
+
 .modal-body {
   padding: 10px 20px;
   font-size: 15px;
@@ -255,11 +262,10 @@ input {
   height: 22px;
 }
 .test-btn:hover {
-  background-color: #2f6cb155;
+  background-color: #2f6cb134;
 }
 .test-msg {
   margin: 0px 10px;
-  transition: 0.2s all;
 }
 .test-succeeded {
   color: #42a45e;

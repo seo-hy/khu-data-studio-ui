@@ -41,10 +41,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions("manage", ["FETCH_TABLE_DATA"]),
+    ...mapActions("dataset", ["FETCH_DATA"]),
   },
   created() {
-    this.FETCH_TABLE_DATA(this.datasetId).then((res) => {
+    this.FETCH_DATA(this.datasetId).then((res) => {
       this.data = res;
     });
   },

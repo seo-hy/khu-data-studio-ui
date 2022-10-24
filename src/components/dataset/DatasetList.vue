@@ -11,14 +11,14 @@
       </thead>
       <tbody>
         <tr
-          v-for="tableInfo in getTableInfoList"
-          :key="tableInfo.id"
+          v-for="dataset in getDatasets"
+          :key="dataset.id"
         >
-          <td class="name">{{ tableInfo.name }}</td>
-          <td>{{ tableInfo.host }}</td>
-          <td>{{ tableInfo.port }}</td>
-          <td>{{ tableInfo.db }}</td>
-          <td>{{ tableInfo.tableName }}</td>
+          <td class="name">{{ dataset.name }}</td>
+          <td>{{ dataset.host }}</td>
+          <td>{{ dataset.port }}</td>
+          <td>{{ dataset.db }}</td>
+          <td>{{ dataset.tableName }}</td>
           <td class="action">
             <button class="show-btn">
               <font-awesome-icon
@@ -45,7 +45,7 @@
 import { mapGetters } from "vuex";
 export default {
   computed: {
-    ...mapGetters("manage", ["getTableInfoList"]),
+    ...mapGetters("dataset", ["getDatasets"]),
   },
 };
 </script>

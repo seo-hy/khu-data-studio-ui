@@ -15,15 +15,13 @@
       학습 데이터
     </div>
     <router-link
-      v-for="menu in menus.manage"
+      v-for="menu in menus.dataset"
       :key="menu.name"
       :to="{ name: menu.name }"
       class="menu"
-      @click.native="openMenu(menu.name)"
     >
       <font-awesome-icon
         icon="fa-solid fa-chevron-right"
-        v-if="currentMenu === menu.name"
         size="xs"
       ></font-awesome-icon>
       {{ menu.title }}
@@ -37,11 +35,9 @@
       :key="menu.name"
       :to="{ name: menu.name }"
       class="menu"
-      @click.native="openMenu(menu.name)"
     >
       <font-awesome-icon
         icon="fa-solid fa-chevron-right"
-        v-if="currentMenu === menu.name"
         size="xs"
       ></font-awesome-icon>
       {{ menu.title }}
@@ -55,11 +51,9 @@
       :key="menu.name"
       :to="{ name: menu.name }"
       class="menu"
-      @click.native="openMenu(menu.name)"
     >
       <font-awesome-icon
         icon="fa-solid fa-chevron-right"
-        v-if="currentMenu === menu.name"
         size="xs"
       ></font-awesome-icon>
       {{ menu.title }}
@@ -72,9 +66,9 @@ export default {
   data() {
     return {
       menus: {
-        manage: [
+        dataset: [
           {
-            name: "datasetManage",
+            name: "manage",
             title: "데이터셋 관리",
           },
         ],
@@ -159,7 +153,7 @@ export default {
   padding-bottom: 1px;
 }
 .menu > svg {
-  padding-bottom: 1px;
+  display: none;
 }
 .menu {
   display: block;
@@ -175,5 +169,10 @@ export default {
 }
 .menu:hover {
   color: #9e9e9e;
+}
+
+.router-link-active svg {
+  display: inline-block;
+  padding-bottom: 1px;
 }
 </style>

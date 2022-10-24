@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import DatasetList from "@/components/manage/DatasetList";
-import DatasetAddModal from "@/components/manage/DatasetAddModal";
+import DatasetList from "@/components/dataset/DatasetList";
+import DatasetAddModal from "@/components/dataset/DatasetAddModal";
 export default {
   components: {
     DatasetList,

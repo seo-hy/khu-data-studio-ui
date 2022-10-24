@@ -59,7 +59,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("manage", ["getTableInfoList"]),
+    ...mapGetters("dataset", ["getDatasets"]),
   },
 };
 </script>
