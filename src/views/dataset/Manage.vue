@@ -48,16 +48,18 @@ export default {
 .title {
   color: #bcbcbc;
   font-size: 25px;
-  margin: 24px;
+  height: 50px;
+  line-height: 70px;
+  padding-left: 20px;
 }
 .content {
   width: 95%;
-  height: calc(100% - 120px);
-  margin: auto;
+  height: calc(100vh - 90px);
   background-color: #1e1e1e;
   border-radius: 10px;
-  padding: 10px;
+  margin: 20px auto;
   box-sizing: border-box;
+  padding: 15px;
 }
 
 .content-header {

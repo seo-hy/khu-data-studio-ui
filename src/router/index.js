@@ -4,9 +4,9 @@ import Home from "@/views/Home";
 import Manage from "@/views/dataset/Manage";
 import Visualize from "@/views/status/Visualize";
 import Statistics from "@/views/status/Statistics";
-import Cleaning from "@/views/preprocessing/Cleaning";
-import Integration from "@/views/preprocessing/Integration";
-import Augmentation from "@/views/preprocessing/Augmentation";
+import MissingValue from "@/views/cleaning/MissingValue";
+import Noise from "@/views/cleaning/Noise";
+import Jittering from "@/views/augmentation/Jittering";
 
 Vue.use(VueRouter);
 
@@ -32,19 +32,19 @@ const routes = [
     component: Statistics,
   },
   {
-    path: "/preprocessing/cleaning",
-    name: "cleaning",
-    component: Cleaning,
+    path: "/cleaning/missing-value",
+    name: "missing-value",
+    component: MissingValue,
   },
   {
-    path: "/preprocessing/integration",
-    name: "integration",
-    component: Integration,
+    path: "/cleaning/noise",
+    name: "noise",
+    component: Noise,
   },
   {
-    path: "/preprocessing/augmentation",
-    name: "augmentation",
-    component: Augmentation,
+    path: "/augmentation/jittering",
+    name: "jittering",
+    component: Jittering,
   },
 ];
 const router = new VueRouter({

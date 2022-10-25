@@ -1,0 +1,227 @@
+<template>
+  <div class="control-container">
+    <div class="data-description">
+      결측치가 포함된 행을 나열합니다.
+    </div>
+
+    <div class="data-container">
+      <div v-if="isLoading" class="loading">
+        <Spinner />
+      </div>
+      <div class="table-container" v-if="!isLoading">
+        <table>
+          <thead>
+            <th v-for="(col, i) in data.column" :key="i">
+              {{ col.name }}
+            </th>
+          </thead>
+          <tbody>
+            <tr v-for="(row, i) in data.data" :key="i">
+              <td v-for="(col, j) in data.column" :key="j">
+                {{ row[col.name] }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="action-container">
+        <div class="method-label">
+          결측치 처리 방법을 선택하세요.
+        </div>
+        <select
+          v-model="selectedMethod"
+          class="method-select"
+        >
+          <option
+            v-for="method in methods"
+            :value="method.value"
+            :key="method.value"
+          >
+            {{ method.text }}
+          </option>
+        </select>
+        <div class="btn-container">
+          <button class="restore-btn" @click="findNa">
+            복원
+          </button>
+          <button class="run-btn" @click="processNa">
+            수행
+          </button>
+          <button class="save-btn">저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapActions } from "vuex";
+import Spinner from "@/components/common/Spinner";
+export default {
+  props: ["datasetId"],
+  components: {
+    Spinner,
+  },
+  data() {
+    return {
+      data: [],
+      originData: [],
+      originDataNa: [],
+      isLoading: true,
+      selectedMethod: "0",
+      methods: [
+        {
+          text: "예측값으로 대체",
+          value: "0",
+        },
+        {
+          text: "전,후 데이터 평균값으로 대체",
+          value: "1",
+        },
+        {
+          text: "결측치 포함 행 제거",
+          value: "2",
+        },
+      ],
+    };
+  },
+  methods: {
+    ...mapActions("dataset", ["FETCH_DATA"]),
+    ...mapActions("cleaning", ["FIND_NA", "PROCESS_NA"]),
+    findNa() {
+      this.FETCH_DATA({
+        datasetId: this.datasetId,
+        limit: 0,
+      }).then((res) => {
+        this.originData = res;
+        this.FIND_NA(res).then((res) => {
+          this.data = res;
+          this.originDataNa = res;
+          this.isLoading = false;
+        });
+      });
+    },
+    restore() {
+      this.isLoading = true;
+      this.data = this.originDataNa;
+      this.isLoading = false;
+    },
+    processNa() {
+      this.isLoading = true;
+      this.PROCESS_NA({
+        method: this.selectedMethod,
+        request: this.originData,
+      }).then((res) => {
+        this.data = res;
+        this.isLoading = false;
+      });
+    },
+  },
+  created() {
+    this.findNa();
+  },
+};
+</script>
+
+<style scoped>
+.control-container {
+  height: 100%;
+}
+table {
+  color: #e8e8e8;
+  font-weight: 300;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 16px;
+  border: 1.5px solid #545454;
+}
+th {
+  height: 35px;
+  border: 1.5px solid #545454;
+  font-size: 17px;
+  font-weight: 400;
+  background-color: #2c2c2c;
+}
+td {
+  border: 1px solid #353535;
+  height: 30px;
+  width: 12%;
+}
+
+.data-description {
+  color: #e8e8e8;
+  font-weight: 300;
+  margin-bottom: 5px;
+}
+.data-container {
+  display: flex;
+  justify-content: space-between;
+  height: calc(100% - 35px);
+}
+.table-container {
+  overflow: auto;
+  width: 65%;
+}
+
+.action-container {
+  margin-right: 20px;
+  padding: 20px;
+  position: relative;
+  border: 0.8px solid rgba(109, 109, 109, 0.306);
+  background-color: rgba(255, 255, 255, 0.014);
+  border-radius: 15px;
+  width: 250px;
+  margin-left: 10px;
+}
+.loading {
+  margin-top: 30px;
+  width: 65%;
+}
+.method-label {
+  color: #e8e8e8;
+  margin-bottom: 10px;
+}
+.method-select {
+  background-color: rgb(39, 39, 39);
+  color: #e8e8e8;
+  font-size: 18px;
+  padding: 10px;
+}
+.btn-container {
+  width: 250px;
+  padding-right: 20px;
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 20px;
+}
+.btn-container button {
+  width: 70px;
+  font-size: 18px;
+  height: 30px;
+  font-size: 17px;
+  margin: 0 5px;
+  border-radius: 5px;
+  color: #e8e8e8;
+  font-weight: 400;
+  border: 1px #676767a6 solid;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.restore-btn,
+.run-btn {
+  background-color: #373737;
+}
+.restore-btn:hover,
+.run-btn:hover {
+  background-color: #464646;
+}
+.save-btn {
+  background-color: #3f8ae2;
+}
+.save-btn:hover {
+  background-color: #2f6cb1;
+}
+</style>

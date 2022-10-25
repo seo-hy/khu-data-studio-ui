@@ -1,62 +1,64 @@
 <template>
-  <div>
-    <table>
-      <thead>
-        <th>Name</th>
-        <th>Host</th>
-        <th>Port</th>
-        <th>Database</th>
-        <th>Table</th>
-        <th>Action</th>
-      </thead>
-      <tbody>
-        <tr
-          v-for="dataset in getDatasets"
-          :key="dataset.id"
-        >
-          <td class="name">{{ dataset.name }}</td>
-          <td>{{ dataset.host }}</td>
-          <td>{{ dataset.port }}</td>
-          <td>{{ dataset.db }}</td>
-          <td>{{ dataset.tableName }}</td>
-          <td class="action">
-            <button
-              class="show-btn"
-              @click="
-                openDatasetPreviewModal(
-                  dataset.id,
-                  dataset.name
-                )
-              "
-            >
-              <font-awesome-icon
-                icon="fa-solid fa-table"
-              />열람
-            </button>
-            <button
-              class="edit-btn"
-              @click="openDatasetUpdateModal(dataset.id)"
-            >
-              <font-awesome-icon icon="fa-solid fa-pen" />
-              수정
-            </button>
-            <button
-              class="delete-btn"
-              @click="
-                openDatasetDeleteModal(
-                  dataset.id,
-                  dataset.name
-                )
-              "
-            >
-              <font-awesome-icon
-                icon="fa-solid fa-trash-can"
-              />삭제
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="datalist-container">
+    <div class="table-container">
+      <table>
+        <thead>
+          <th>Name</th>
+          <th>Host</th>
+          <th>Port</th>
+          <th>Database</th>
+          <th>Table</th>
+          <th>Action</th>
+        </thead>
+        <tbody>
+          <tr
+            v-for="dataset in getDatasets"
+            :key="dataset.id"
+          >
+            <td class="name">{{ dataset.name }}</td>
+            <td>{{ dataset.host }}</td>
+            <td>{{ dataset.port }}</td>
+            <td>{{ dataset.db }}</td>
+            <td>{{ dataset.tableName }}</td>
+            <td class="action">
+              <button
+                class="show-btn"
+                @click="
+                  openDatasetPreviewModal(
+                    dataset.id,
+                    dataset.name
+                  )
+                "
+              >
+                <font-awesome-icon
+                  icon="fa-solid fa-table"
+                />열람
+              </button>
+              <button
+                class="edit-btn"
+                @click="openDatasetUpdateModal(dataset.id)"
+              >
+                <font-awesome-icon icon="fa-solid fa-pen" />
+                수정
+              </button>
+              <button
+                class="delete-btn"
+                @click="
+                  openDatasetDeleteModal(
+                    dataset.id,
+                    dataset.name
+                  )
+                "
+              >
+                <font-awesome-icon
+                  icon="fa-solid fa-trash-can"
+                />삭제
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <DatasetUpdateModal
       v-if="showDatasetUpdateModal"
       @close="closeDatasetUpdateModal"
@@ -133,8 +135,15 @@ export default {
 </script>
 
 <style scoped>
+.datalist-container {
+  height: 100%;
+}
+.table-container {
+  padding-top: 10px;
+  overflow: auto;
+  height: calc(100% - 50px);
+}
 table {
-  margin-top: 20px;
   color: #e8e8e8;
   font-weight: 300;
   border-collapse: collapse;

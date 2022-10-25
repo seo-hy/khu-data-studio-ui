@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="gnb">
     <router-link
       :to="{ name: 'home' }"
       class="title"
@@ -44,10 +44,26 @@
     </router-link>
     <div class="menu-title">
       <font-awesome-icon icon="fa-solid fa-wrench" />
-      데이터 전처리
+      데이터 정제
     </div>
     <router-link
-      v-for="menu in menus.preprocessing"
+      v-for="menu in menus.cleaning"
+      :key="menu.name"
+      :to="{ name: menu.name }"
+      class="menu"
+    >
+      <font-awesome-icon
+        icon="fa-solid fa-chevron-right"
+        size="xs"
+      ></font-awesome-icon>
+      {{ menu.title }}
+    </router-link>
+    <div class="menu-title">
+      <font-awesome-icon icon="fa-solid fa-wrench" />
+      데이터 증강
+    </div>
+    <router-link
+      v-for="menu in menus.augmentation"
       :key="menu.name"
       :to="{ name: menu.name }"
       class="menu"
@@ -82,18 +98,20 @@ export default {
             title: "통계",
           },
         ],
-        preprocessing: [
+        cleaning: [
           {
-            name: "cleaning",
-            title: "정제",
+            name: "missing-value",
+            title: "결측치 처리",
           },
           {
-            name: "integration",
-            title: "통합",
+            name: "noise",
+            title: "노이즈 제거",
           },
+        ],
+        augmentation: [
           {
-            name: "augmentation",
-            title: "증강",
+            name: "jittering",
+            title: "Jittering",
           },
         ],
       },
@@ -109,10 +127,10 @@ export default {
 </script>
 
 <style scoped>
-.main {
+.gnb {
   background-color: #2c2c2c;
   width: 220px;
-  min-height: 450px;
+  min-height: 500px;
   height: 100vh;
   box-shadow: 4px 0px 30px 3px rgba(0, 0, 0, 0.26);
   justify-content: center;

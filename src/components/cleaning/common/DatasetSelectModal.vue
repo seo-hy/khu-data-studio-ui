@@ -3,11 +3,13 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div class="modal-header">
-          <div>데이터 선택</div>
+          <div>데이터셋 선택</div>
         </div>
         <div class="modal-body">
           <div>
-            <div class="label">데이터셋 선택</div>
+            <div class="description">
+              전처리할 데이터셋을 선택하세요.
+            </div>
             <table>
               <thead>
                 <th>Name</th>
@@ -136,8 +138,9 @@ export default {
 .close-btn:hover {
   background-color: #2f6cb1;
 }
-.label {
+.description {
   margin-left: 10px;
+  font-weight: 300;
 }
 table {
   margin-top: 10px;

@@ -14,7 +14,7 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 
-axios.defaults.baseURL = "http://localhost:8081";
+axios.defaults.baseURL = "http://localhost:8000";
 
 new Vue({
   router,

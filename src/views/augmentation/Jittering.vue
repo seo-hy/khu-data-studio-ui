@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="title">데이터 증강</div>
+    <div class="title">데이터 증강 - Jittering</div>
     <div class="content">
       <div class="content-header"></div>
     </div>
