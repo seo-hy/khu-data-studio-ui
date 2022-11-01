@@ -17,7 +17,11 @@
           </thead>
           <tbody>
             <tr v-for="(row, i) in data.data" :key="i">
-              <td v-for="(col, j) in data.column" :key="j">
+              <td
+                v-for="(col, j) in data.column"
+                :key="j"
+                :class="{ naTd: isNaIdx(i, j) }"
+              >
                 {{ row[col.name] }}
               </td>
             </tr>
@@ -71,6 +75,7 @@ export default {
       originData: [],
       originDataNa: [],
       isLoading: true,
+      naIdxList: [],
       selectedMethod: "0",
       idxCol: "created_at",
       methods: [
@@ -104,8 +109,37 @@ export default {
           this.data = res;
           this.originDataNa = res;
           this.isLoading = false;
+          this.updateNaIdx();
         });
       });
+    },
+    updateNaIdx() {
+      this.naIdxList = [];
+      for (
+        var i = 0;
+        i < this.originDataNa.data.length;
+        i++
+      ) {
+        for (
+          var j = 0;
+          j < this.originDataNa.column.length;
+          j++
+        ) {
+          if (
+            this.originDataNa.data[i][
+              this.originDataNa.column[j].name
+            ] === null
+          ) {
+            this.naIdxList.push({ i, j });
+          }
+        }
+      }
+    },
+    isNaIdx(iIdx, jIdx) {
+      var isContain = this.naIdxList.filter(
+        (e) => e.i === iIdx && e.j === jIdx
+      );
+      return isContain.length > 0;
     },
     restore() {
       this.isLoading = true;
@@ -147,20 +181,18 @@ export default {
 table {
   color: #e8e8e8;
   font-weight: 300;
-  border-collapse: collapse;
   text-align: center;
   font-size: 16px;
   border: 1.5px solid #545454;
 }
 th {
   height: 35px;
-  border: 1.5px solid #545454;
   font-size: 17px;
   font-weight: 400;
   background-color: #2c2c2c;
 }
 td {
-  border: 1px solid #353535;
+  border: 0.5px solid #353535;
   height: 30px;
   width: 12%;
 }
@@ -240,5 +272,8 @@ td {
 }
 .save-btn:hover {
   background-color: #2f6cb1;
+}
+.naTd {
+  border: 1px double #ae2f2f;
 }
 </style>
