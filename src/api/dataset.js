@@ -76,6 +76,12 @@ const dataset = {
         limit
     );
   },
+  updateData(datasetId, request) {
+    return axios.put(
+      "/dataset-api/datasets/" + datasetId + "/data",
+      request
+    );
+  },
 };
 
 export default dataset;

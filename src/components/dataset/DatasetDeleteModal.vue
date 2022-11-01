@@ -6,7 +6,8 @@
           <div class="title">데이터셋 삭제</div>
         </div>
         <div class="modal-body">
-          " {{ datasetName }} " 데이터셋을 삭제하시겠습니까?
+          " {{ datasetName }} " <br />데이터셋을
+          삭제하시겠습니까?
         </div>
         <div class="modal-footer">
           <button class="delete-btn" @click="deleteData">

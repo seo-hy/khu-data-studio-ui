@@ -7,6 +7,7 @@ import Statistics from "@/views/status/Statistics";
 import MissingValue from "@/views/cleaning/MissingValue";
 import Noise from "@/views/cleaning/Noise";
 import Jittering from "@/views/augmentation/Jittering";
+import MagnitudeWarping from "@/views/augmentation/MagnitudeWarping";
 
 Vue.use(VueRouter);
 
@@ -45,6 +46,11 @@ const routes = [
     path: "/augmentation/jittering",
     name: "jittering",
     component: Jittering,
+  },
+  {
+    path: "/augmentation/magnitude-warping",
+    name: "magnitude-warping",
+    component: MagnitudeWarping,
   },
 ];
 const router = new VueRouter({

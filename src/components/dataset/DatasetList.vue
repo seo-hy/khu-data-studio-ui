@@ -136,7 +136,7 @@ export default {
 
 <style scoped>
 .datalist-container {
-  height: 100%;
+  height: calc(100% - 30px);
 }
 .table-container {
   padding-top: 10px;
@@ -164,13 +164,13 @@ td {
   height: 30px;
   width: 12%;
 }
+
 .name {
-  width: 300px;
+  min-width: 200px;
 }
 .action {
-  width: 230px;
+  min-width: 190px;
 }
-
 .action button {
   padding: 5px;
   width: 55px;

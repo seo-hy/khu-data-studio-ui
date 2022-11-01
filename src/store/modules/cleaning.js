@@ -12,10 +12,12 @@ const actions = {
       return res.data;
     });
   },
-  PROCESS_NA(context, { method, request }) {
-    return cleaning.process(method, request).then((res) => {
-      return res.data;
-    });
+  RUN_NA(context, { method, idxCol, request }) {
+    return cleaning
+      .run(method, idxCol, request)
+      .then((res) => {
+        return res.data;
+      });
   },
 };
 

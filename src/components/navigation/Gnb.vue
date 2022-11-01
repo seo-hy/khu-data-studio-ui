@@ -44,7 +44,7 @@
     </router-link>
     <div class="menu-title">
       <font-awesome-icon icon="fa-solid fa-wrench" />
-      데이터 정제
+      데이터 전처리
     </div>
     <router-link
       v-for="menu in menus.cleaning"
@@ -58,8 +58,8 @@
       ></font-awesome-icon>
       {{ menu.title }}
     </router-link>
-    <div class="menu-title">
-      <font-awesome-icon icon="fa-solid fa-wrench" />
+    <!-- <div class="menu-title">
+      <font-awesome-icon icon="fa-solid fa-chart-simple" />
       데이터 증강
     </div>
     <router-link
@@ -73,7 +73,7 @@
         size="xs"
       ></font-awesome-icon>
       {{ menu.title }}
-    </router-link>
+    </router-link> -->
   </div>
 </template>
 
@@ -103,17 +103,21 @@ export default {
             name: "missing-value",
             title: "결측치 처리",
           },
-          {
-            name: "noise",
-            title: "노이즈 제거",
-          },
+          // {
+          //   name: "noise",
+          //   title: "노이즈 제거",
+          // },
         ],
-        augmentation: [
-          {
-            name: "jittering",
-            title: "Jittering",
-          },
-        ],
+        // augmentation: [
+        //   {
+        //     name: "jittering",
+        //     title: "Jittering",
+        //   },
+        //   {
+        //     name: "magnitude-warping",
+        //     title: "Magnitude Warping",
+        //   },
+        // ],
       },
       currentMenu: "home",
     };

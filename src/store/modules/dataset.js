@@ -101,6 +101,13 @@ const actions = {
       return res.data;
     });
   },
+  UPDATE_DATA(context, { datasetId, request }) {
+    return dataset
+      .updateData(datasetId, request)
+      .then((res) => {
+        return res.data;
+      });
+  },
 };
 
 export default {

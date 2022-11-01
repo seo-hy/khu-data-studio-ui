@@ -5,35 +5,37 @@
         <div class="modal-header">
           <div class="title">데이터셋 열람</div>
           <div class="description">
-            상위 5개 데이터를 열람할 수 있습니다.
+            상위 5행의 데이터를 열람할 수 있습니다.
           </div>
         </div>
         <div class="modal-body">
           <div class="name">{{ datasetName }}</div>
           <Spinner v-if="isLoading" />
-          <table>
-            <thead>
-              <th
-                v-for="(col, i) in dataList.column"
-                :key="i"
-              >
-                {{ col.name }}
-              </th>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(row, i) in dataList.data"
-                :key="i"
-              >
-                <td
-                  v-for="(col, j) in dataList.column"
-                  :key="j"
+          <div class="preview-table-container">
+            <table>
+              <thead>
+                <th
+                  v-for="(col, i) in dataList.column"
+                  :key="i"
                 >
-                  {{ row[col.name] }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  {{ col.name }}
+                </th>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(row, i) in dataList.data"
+                  :key="i"
+                >
+                  <td
+                    v-for="(col, j) in dataList.column"
+                    :key="j"
+                  >
+                    {{ row[col.name] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="close-btn" @click="close">
@@ -127,6 +129,9 @@ export default {
 .name {
   font-size: 17px;
   padding-left: 10px;
+}
+.preview-table-container {
+  overflow: auto;
 }
 table {
   margin-top: 10px;

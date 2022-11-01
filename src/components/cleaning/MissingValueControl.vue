@@ -44,10 +44,12 @@
           <button class="restore-btn" @click="findNa">
             복원
           </button>
-          <button class="run-btn" @click="processNa">
+          <button class="run-btn" @click="runNa">
             수행
           </button>
-          <button class="save-btn">저장</button>
+          <button class="save-btn" @click="save">
+            저장
+          </button>
         </div>
       </div>
     </div>
@@ -65,10 +67,12 @@ export default {
   data() {
     return {
       data: [],
+      saveData: [],
       originData: [],
       originDataNa: [],
       isLoading: true,
       selectedMethod: "0",
+      idxCol: "created_at",
       methods: [
         {
           text: "예측값으로 대체",
@@ -86,15 +90,17 @@ export default {
     };
   },
   methods: {
-    ...mapActions("dataset", ["FETCH_DATA"]),
-    ...mapActions("cleaning", ["FIND_NA", "PROCESS_NA"]),
+    ...mapActions("dataset", ["FETCH_DATA", "UPDATE_DATA"]),
+    ...mapActions("cleaning", ["FIND_NA", "RUN_NA"]),
     findNa() {
+      this.isLoading = true;
       this.FETCH_DATA({
         datasetId: this.datasetId,
         limit: 0,
       }).then((res) => {
         this.originData = res;
         this.FIND_NA(res).then((res) => {
+          this.saveData = res;
           this.data = res;
           this.originDataNa = res;
           this.isLoading = false;
@@ -106,14 +112,25 @@ export default {
       this.data = this.originDataNa;
       this.isLoading = false;
     },
-    processNa() {
+    runNa() {
       this.isLoading = true;
-      this.PROCESS_NA({
+      this.RUN_NA({
         method: this.selectedMethod,
+        idxCol: this.idxCol,
         request: this.originData,
       }).then((res) => {
-        this.data = res;
+        this.data = res.run;
+        this.saveData = res.save;
         this.isLoading = false;
+      });
+    },
+    save() {
+      this.isLoading = true;
+      this.UPDATE_DATA({
+        datasetId: this.datasetId,
+        request: this.saveData,
+      }).then(() => {
+        this.findNa();
       });
     },
   },

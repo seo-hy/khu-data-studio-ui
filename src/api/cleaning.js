@@ -7,10 +7,12 @@ const cleaning = {
       request
     );
   },
-  process(method, request) {
+  run(method, idxCol, request) {
     return axios.post(
-      "/cleaning-api/missing-value/process?method=" +
-        method,
+      "/cleaning-api/missing-value/run?method=" +
+        method +
+        "&idx_col=" +
+        idxCol,
       request
     );
   },
