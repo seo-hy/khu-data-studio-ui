@@ -26,6 +26,16 @@ const actions = {
         return res.data;
       });
   },
+  STD(context, { request }) {
+    return cleaning.std(request).then((res) => {
+      return res.data;
+    });
+  },
+  MEAN(context, { request }) {
+    return cleaning.mean(request).then((res) => {
+      return res.data;
+    });
+  },
 };
 
 export default {

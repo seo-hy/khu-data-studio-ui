@@ -22,6 +22,12 @@ const cleaning = {
       request
     );
   },
+  std(request) {
+    return axios.post("/cleaning-api/std", request);
+  },
+  mean(request) {
+    return axios.post("/cleaning-api/mean", request);
+  },
 };
 
 export default cleaning;
