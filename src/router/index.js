@@ -3,7 +3,7 @@ import VueRouter from "vue-router";
 import Home from "@/views/Home";
 import Manage from "@/views/dataset/Manage";
 import Visualize from "@/views/status/Visualize";
-import Statistics from "@/views/status/Statistics";
+import Statistic from "@/views/status/Statistic";
 import MissingValue from "@/views/cleaning/MissingValue";
 import Noise from "@/views/cleaning/Noise";
 import Jittering from "@/views/augmentation/Jittering";
@@ -28,9 +28,9 @@ const routes = [
     component: Visualize,
   },
   {
-    path: "/status/statistics",
-    name: "statistics",
-    component: Statistics,
+    path: "/status/statistic",
+    name: "statistic",
+    component: Statistic,
   },
   {
     path: "/cleaning/missing-value",

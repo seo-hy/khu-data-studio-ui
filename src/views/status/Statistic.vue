@@ -1,9 +1,9 @@
 <template>
   <div class="main">
-    <div class="title">데이터 정제 - 결측치 처리</div>
+    <div class="title">통계</div>
     <div class="content">
-      <MissingValueControl
-        v-if="showData"
+      <StatisticContent
+        v-if="showContent"
         :datasetId="datasetId"
       />
     </div>
@@ -13,7 +13,7 @@
     >
       <template slot="description">
         <div class="description">
-          전처리할 데이터셋을 선택하세요.
+          데이터셋을 선택하세요.
         </div>
       </template>
     </DatasetSelectModal>
@@ -22,25 +22,25 @@
 
 <script>
 import DatasetSelectModal from "@/components/common/DatasetSelectModal";
-import MissingValueControl from "@/components/cleaning/MissingValueControl";
+import StatisticContent from "@/components/statistic/StatisticContent";
 
 export default {
   components: {
     DatasetSelectModal,
-    MissingValueControl,
+    StatisticContent,
   },
   data() {
     return {
       showDatasetSelectModal: true,
       datasetId: 0,
-      showData: false,
+      showContent: false,
     };
   },
   methods: {
     closeDatasetSelectModal(datasetId) {
       this.showDatasetSelectModal = false;
       this.datasetId = datasetId;
-      this.showData = true;
+      this.showContent = true;
     },
   },
 };

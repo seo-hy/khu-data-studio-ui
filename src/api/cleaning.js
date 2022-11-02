@@ -16,6 +16,12 @@ const cleaning = {
       request
     );
   },
+  pearsonCorrelation(request) {
+    return axios.post(
+      "/cleaning-api/pearson-correlation",
+      request
+    );
+  },
 };
 
 export default cleaning;

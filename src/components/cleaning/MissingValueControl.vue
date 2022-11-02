@@ -104,7 +104,7 @@ export default {
         limit: 0,
       }).then((res) => {
         this.originData = res;
-        this.FIND_NA(res).then((res) => {
+        this.FIND_NA({ request: res }).then((res) => {
           this.saveData = res;
           this.data = res;
           this.originDataNa = res;

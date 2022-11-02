@@ -7,9 +7,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <div class="description">
-              전처리할 데이터셋을 선택하세요.
-            </div>
+            <slot name="description"></slot>
             <table>
               <thead>
                 <th>Name</th>

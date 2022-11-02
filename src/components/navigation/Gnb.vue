@@ -94,7 +94,7 @@ export default {
             title: "시각화",
           },
           {
-            name: "statistics",
+            name: "statistic",
             title: "통계",
           },
         ],
