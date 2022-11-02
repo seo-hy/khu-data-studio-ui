@@ -3,10 +3,21 @@
     <div class="pearson-container">
       <div class="pearson-container-header">
         <div class="sub-title">피어슨 상관계수</div>
-        <div class="pearson-threshold-input">
-          <div class="label">임계값을 입력하세요(0~1)</div>
-          <input type="number" />
-          <button>확인</button>
+        <div class="pearson-threshold-input-container">
+          <div class="pearson-threshold-label">
+            임계값을 입력하세요 (0~1)
+          </div>
+          <input
+            type="number"
+            class="pearson-threshold-input"
+            v-model="inputThreshod"
+          />
+          <button
+            class="pearson-threshold-btn"
+            @click="updateThreshold"
+          >
+            확인
+          </button>
         </div>
       </div>
       <div v-if="isLoading" class="loading">
@@ -33,6 +44,9 @@
               <td
                 v-for="(col, j) in Object.keys(pearson)"
                 :key="j"
+                :class="{
+                  highlight: highlight(pearson[row][col]),
+                }"
               >
                 {{ pearson[row][col] }}
               </td>
@@ -60,6 +74,8 @@ export default {
       data: [],
       pearson: [],
       isLoading: true,
+      threshod: 1,
+      inputThreshod: 1,
     };
   },
   methods: {
@@ -79,6 +95,19 @@ export default {
         });
       });
     },
+    highlight(val) {
+      if (Math.abs(val) >= this.threshod) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    updateThreshold() {
+      if (this.inputThreshod === null) {
+        this.inputThreshod = 1;
+      }
+      this.threshod = this.inputThreshod;
+    },
   },
   created() {
     this.get_pearson_correlation();
@@ -90,6 +119,36 @@ export default {
 .pearson-container-header {
   display: flex;
   justify-content: space-between;
+}
+
+.pearson-threshold-label {
+  color: #e8e8e8;
+}
+.pearson-threshold-input {
+  margin: auto;
+  height: 18px;
+  width: 100px;
+  background-color: #1f1f1f;
+  border: none;
+  color: #e8e8e8;
+  padding: 3px 20px;
+  outline: 1px #676767a6 solid;
+}
+.pearson-threshold-btn {
+  width: 60px;
+  height: 27px;
+  font-size: 16px;
+  margin: 0 5px;
+  border-radius: 5px;
+  color: #e8e8e8;
+  font-weight: 400;
+  border: 1px #676767a6 solid;
+  cursor: pointer;
+  transition: all 0.5s;
+  background-color: #3f8ae2;
+}
+.pearson-threshold-btn:hover {
+  background-color: #2f6cb1;
 }
 .sub-title {
   color: #e8e8e8;
@@ -128,6 +187,10 @@ td {
   background-color: #2c2c2c;
   height: 35px;
   font-size: 17px;
+  font-weight: 400;
+}
+.highlight {
+  color: #3f8ae2;
   font-weight: 400;
 }
 </style>
