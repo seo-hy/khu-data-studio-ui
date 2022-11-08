@@ -1,6 +1,9 @@
 <template>
   <div class="main">
-    <div class="title">통계</div>
+    <div class="header">
+      <div class="title">통계</div>
+      <SelectPeriod />
+    </div>
     <div class="content">
       <StatisticContent
         v-if="showContent"
@@ -23,11 +26,13 @@
 <script>
 import DatasetSelectModal from "@/components/common/DatasetSelectModal";
 import StatisticContent from "@/components/statistic/StatisticContent";
+import SelectPeriod from "@/components/statistic/SelectPeriod";
 
 export default {
   components: {
     DatasetSelectModal,
     StatisticContent,
+    SelectPeriod,
   },
   data() {
     return {
@@ -50,12 +55,18 @@ export default {
 .main {
   width: calc(100% - 220px);
 }
+.header {
+  padding-left: 20px;
+  padding-right: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
 .title {
   color: #bcbcbc;
   font-size: 25px;
-  height: 50px;
   line-height: 70px;
-  padding-left: 20px;
 }
 .content {
   width: 95%;
@@ -63,6 +74,7 @@ export default {
   background-color: #1e1e1e;
   border-radius: 10px;
   margin: 20px auto;
+  margin-top: 0px;
   box-sizing: border-box;
   padding: 15px;
 }

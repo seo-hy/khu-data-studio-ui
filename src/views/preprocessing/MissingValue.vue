@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="title">데이터 정제 - 결측치 처리</div>
+    <div class="title">결측치 처리</div>
     <div class="content">
       <MissingValueControl
         v-if="showData"
