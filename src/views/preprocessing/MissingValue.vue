@@ -31,7 +31,7 @@
 <script>
 import SelectedData from "@/components/common/SelectedData";
 import DatasetSelectModal from "@/components/common/DatasetSelectModal";
-import MissingValueControl from "@/components/cleaning/MissingValueControl";
+import MissingValueControl from "@/components/preprocessing/MissingValueControl";
 
 export default {
   components: {

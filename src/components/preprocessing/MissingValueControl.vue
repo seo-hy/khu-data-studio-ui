@@ -1,5 +1,5 @@
 <template>
-  <div class="control-container">
+  <div class="missing-value-control">
     <div class="data-description">
       결측치가 포함된 행을 나열합니다.
     </div>
@@ -193,7 +193,7 @@ export default {
 </script>
 
 <style scoped>
-.control-container {
+.missing-value-control {
   height: 100%;
 }
 table {
