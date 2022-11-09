@@ -14,24 +14,33 @@
           <div class="preview-table-container">
             <table>
               <thead>
-                <th
-                  v-for="(col, i) in dataList.column"
-                  :key="i"
-                >
-                  {{ col.name }}
-                </th>
+                <template v-for="(col, i) in data.column">
+                  <th :key="i" v-if="col.dateTimeColumn">
+                    {{ col.name }}
+                  </th>
+                </template>
+                <template v-for="(col, i) in data.column">
+                  <th :key="i" v-if="!col.dateTimeColumn">
+                    {{ col.name }}
+                  </th>
+                </template>
               </thead>
               <tbody>
-                <tr
-                  v-for="(row, i) in dataList.data"
-                  :key="i"
-                >
-                  <td
-                    v-for="(col, j) in dataList.column"
-                    :key="j"
-                  >
-                    {{ row[col.name] }}
-                  </td>
+                <tr v-for="(row, i) in data.data" :key="i">
+                  <template v-for="(col, j) in data.column">
+                    <td
+                      :key="j"
+                      v-if="col.dateTimeColumn"
+                      class="datetime-td"
+                    >
+                      {{ row[col.name] }}
+                    </td>
+                  </template>
+                  <template v-for="(col, j) in data.column">
+                    <td :key="j" v-if="!col.dateTimeColumn">
+                      {{ row[col.name] }}
+                    </td>
+                  </template>
                 </tr>
               </tbody>
             </table>
@@ -58,7 +67,7 @@ export default {
   },
   data() {
     return {
-      dataList: [],
+      data: [],
       isLoading: true,
     };
   },
@@ -73,7 +82,7 @@ export default {
         limit: 5,
       }).then((res) => {
         this.isLoading = false;
-        this.dataList = res;
+        this.data = res;
       });
     },
   },
@@ -153,6 +162,10 @@ td {
   border: 1px solid #353535;
   height: 30px;
   width: 12%;
+}
+.datetime-td {
+  border: 1.5px solid #545454;
+  background-color: #2c2c2c;
 }
 
 .modal-footer {

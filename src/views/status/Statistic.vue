@@ -20,6 +20,7 @@
     <DatasetSelectModal
       v-if="showDatasetSelectModal"
       @close="closeDatasetSelectModal"
+      :datasetId="datasetId"
     >
       <template slot="description">
         <div class="description">

@@ -72,6 +72,15 @@
               v-model="tableName"
             />
           </div>
+          <div class="input">
+            <label for="table">Datetime Column</label>
+            <input
+              type="text"
+              id="dateTimeColumn"
+              autocomplete="off"
+              v-model="dateTimeColumn"
+            />
+          </div>
           <div class="test">
             <button class="test-btn" @click="connect">
               Test Connection
@@ -117,6 +126,7 @@ export default {
       userName: "",
       password: "",
       tableName: "",
+      dateTimeColumn: "",
     };
   },
   methods: {
@@ -137,10 +147,11 @@ export default {
         userName: this.userName,
         password: this.password,
         tableName: this.tableName,
+        dateTimeColumn: this.dateTimeColumn,
       }).then(() => {
         this.FETCH_DATASETS();
+        this.$emit("close");
       });
-      this.$emit("close");
     },
     connect() {
       this.isSucceeded = false;

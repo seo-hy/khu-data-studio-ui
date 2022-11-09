@@ -9,6 +9,7 @@ const dataset = {
     userName,
     password,
     tableName,
+    dateTimeColumn,
   }) {
     return axios.post("/dataset-api/datasets", {
       name,
@@ -18,6 +19,7 @@ const dataset = {
       userName,
       password,
       tableName,
+      dateTimeColumn,
     });
   },
   get(datasetId) {
@@ -35,6 +37,7 @@ const dataset = {
     userName,
     password,
     tableName,
+    dateTimeColumn,
   }) {
     return axios.put("/dataset-api/datasets/" + datasetId, {
       name,
@@ -44,6 +47,7 @@ const dataset = {
       userName,
       password,
       tableName,
+      dateTimeColumn,
     });
   },
   delete(datasetId) {
@@ -74,6 +78,11 @@ const dataset = {
         datasetId +
         "/data?limit=" +
         limit
+    );
+  },
+  getColumn(datasetId) {
+    return axios.get(
+      "/dataset-api/datasets/" + datasetId + "/column"
     );
   },
   updateData(datasetId, request) {

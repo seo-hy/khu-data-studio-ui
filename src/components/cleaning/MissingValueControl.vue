@@ -11,19 +11,37 @@
       <div class="table-container" v-if="!isLoading">
         <table>
           <thead>
-            <th v-for="(col, i) in data.column" :key="i">
-              {{ col.name }}
-            </th>
+            <template v-for="(col, i) in data.column">
+              <th :key="i" v-if="col.dateTimeColumn">
+                {{ col.name }}
+              </th>
+            </template>
+            <template v-for="(col, i) in data.column">
+              <th :key="i" v-if="!col.dateTimeColumn">
+                {{ col.name }}
+              </th>
+            </template>
           </thead>
           <tbody>
             <tr v-for="(row, i) in data.data" :key="i">
-              <td
-                v-for="(col, j) in data.column"
-                :key="j"
-                :class="{ naTd: isNaIdx(i, j) }"
-              >
-                {{ row[col.name] }}
-              </td>
+              <template v-for="(col, j) in data.column">
+                <td
+                  :key="j"
+                  v-if="col.dateTimeColumn"
+                  class="datetime-td"
+                >
+                  {{ row[col.name] }}
+                </td>
+              </template>
+              <template v-for="(col, j) in data.column">
+                <td
+                  :key="j"
+                  v-if="!col.dateTimeColumn"
+                  :class="{ 'na-td': isNaIdx(i, j) }"
+                >
+                  {{ row[col.name] }}
+                </td>
+              </template>
             </tr>
           </tbody>
         </table>
@@ -80,7 +98,7 @@ export default {
       idxCol: "created_at",
       methods: [
         {
-          text: "예측값으로 대체",
+          text: "VAR모델 기반 예측값으로 대체",
           value: "0",
         },
         {
@@ -233,7 +251,7 @@ td {
 .method-select {
   background-color: rgb(39, 39, 39);
   color: #e8e8e8;
-  font-size: 18px;
+  font-size: 16px;
   padding: 10px;
 }
 .btn-container {
@@ -273,7 +291,12 @@ td {
 .save-btn:hover {
   background-color: #2f6cb1;
 }
-.naTd {
+.na-td {
   border: 1px double #ae2f2f;
+}
+.datetime-td {
+  border: 1.5px solid #545454;
+  background-color: #2c2c2c;
+  border: none;
 }
 </style>

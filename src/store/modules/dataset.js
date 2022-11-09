@@ -19,7 +19,16 @@ const mutations = {
 const actions = {
   SAVE_DATASET(
     context,
-    { name, host, port, db, userName, password, tableName }
+    {
+      name,
+      host,
+      port,
+      db,
+      userName,
+      password,
+      tableName,
+      dateTimeColumn,
+    }
   ) {
     return dataset
       .save({
@@ -30,6 +39,7 @@ const actions = {
         userName,
         password,
         tableName,
+        dateTimeColumn,
       })
       .then((res) => {
         return res.data;
@@ -56,6 +66,7 @@ const actions = {
       userName,
       password,
       tableName,
+      dateTimeColumn,
     }
   ) {
     return dataset
@@ -68,6 +79,7 @@ const actions = {
         userName,
         password,
         tableName,
+        dateTimeColumn,
       })
       .then((res) => {
         return res.data;
@@ -98,6 +110,11 @@ const actions = {
   },
   FETCH_DATA(context, { datasetId, limit }) {
     return dataset.getData(datasetId, limit).then((res) => {
+      return res.data;
+    });
+  },
+  FETCH_COLUMN(context, { datasetId }) {
+    return dataset.getData(datasetId).then((res) => {
       return res.data;
     });
   },
