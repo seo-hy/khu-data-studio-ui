@@ -52,6 +52,7 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
+  props: ["datasetId"],
   data() {
     return {
       selected: 1,
@@ -67,6 +68,13 @@ export default {
   },
   computed: {
     ...mapGetters("dataset", ["getDatasets"]),
+  },
+  created() {
+    if (this.datasetId === 0) {
+      this.selected = this.getDatasets[0].id;
+    } else {
+      this.selected = this.datasetId;
+    }
   },
 };
 </script>
@@ -141,6 +149,7 @@ export default {
   font-weight: 300;
 }
 table {
+  width: 100%;
   margin-top: 10px;
   color: #e8e8e8;
   font-weight: 300;

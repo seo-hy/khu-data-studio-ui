@@ -112,8 +112,8 @@ export default {
       pearson: [],
       isLoadingPearson: true,
       isLoadingStat: true,
-      threshod: 1,
-      inputThreshod: 1,
+      threshod: 0.5,
+      inputThreshod: 0.5,
       stdList: [],
       meanList: [],
     };
@@ -173,7 +173,7 @@ export default {
     },
     updateThreshold() {
       if (this.inputThreshod === null) {
-        this.inputThreshod = 1;
+        this.inputThreshod = 0.5;
       }
       this.threshod = this.inputThreshod;
     },

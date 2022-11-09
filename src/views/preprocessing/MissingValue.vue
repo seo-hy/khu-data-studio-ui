@@ -1,6 +1,13 @@
 <template>
   <div class="main">
-    <div class="title">데이터 정제 - 결측치 처리</div>
+    <div class="header">
+      <div class="title">결측치 처리</div>
+      <SelectedData
+        v-if="showData"
+        :datasetId="datasetId"
+        @changeDataset="changeDataset"
+      />
+    </div>
     <div class="content">
       <MissingValueControl
         v-if="showData"
@@ -10,6 +17,7 @@
     <DatasetSelectModal
       v-if="showDatasetSelectModal"
       @close="closeDatasetSelectModal"
+      :datasetId="datasetId"
     >
       <template slot="description">
         <div class="description">
@@ -21,13 +29,15 @@
 </template>
 
 <script>
+import SelectedData from "@/components/common/SelectedData";
 import DatasetSelectModal from "@/components/common/DatasetSelectModal";
-import MissingValueControl from "@/components/cleaning/MissingValueControl";
+import MissingValueControl from "@/components/preprocessing/MissingValueControl";
 
 export default {
   components: {
     DatasetSelectModal,
     MissingValueControl,
+    SelectedData,
   },
   data() {
     return {
@@ -42,6 +52,10 @@ export default {
       this.datasetId = datasetId;
       this.showData = true;
     },
+    changeDataset() {
+      this.showDatasetSelectModal = true;
+      this.showData = false;
+    },
   },
 };
 </script>
@@ -50,12 +64,16 @@ export default {
 .main {
   width: calc(100% - 220px);
 }
+.header {
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  height: 70px;
+}
 .title {
   color: #bcbcbc;
   font-size: 25px;
-  height: 50px;
   line-height: 70px;
-  padding-left: 20px;
 }
 .content {
   width: 95%;
@@ -63,6 +81,7 @@ export default {
   background-color: #1e1e1e;
   border-radius: 10px;
   margin: 20px auto;
+  margin-top: 0px;
   box-sizing: border-box;
   padding: 15px;
 }

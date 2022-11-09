@@ -173,7 +173,7 @@ td {
 }
 .action button {
   padding: 5px;
-  width: 55px;
+  width: 60px;
   margin: 5px;
   cursor: pointer;
   background-color: transparent;
