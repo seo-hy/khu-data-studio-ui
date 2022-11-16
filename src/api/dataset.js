@@ -62,6 +62,7 @@ const dataset = {
     password,
     db,
     tableName,
+    dateTimeColumn,
   }) {
     return axios.post("/dataset-api/datasets/connect", {
       host,
@@ -70,14 +71,19 @@ const dataset = {
       userName,
       password,
       tableName,
+      dateTimeColumn,
     });
   },
-  getData(datasetId, limit) {
+  getData(datasetId, limit, st, et) {
     return axios.get(
       "/dataset-api/datasets/" +
         datasetId +
         "/data?limit=" +
-        limit
+        limit +
+        "&st=" +
+        st +
+        "&et=" +
+        et
     );
   },
   getColumn(datasetId) {

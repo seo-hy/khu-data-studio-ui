@@ -25,8 +25,11 @@ const cleaning = {
   std(request) {
     return axios.post("/cleaning-api/std", request);
   },
-  mean(request) {
-    return axios.post("/cleaning-api/mean", request);
+  mean(request, idxCol) {
+    return axios.post(
+      "/cleaning-api/mean?idx_col=" + idxCol,
+      request
+    );
   },
 };
 
