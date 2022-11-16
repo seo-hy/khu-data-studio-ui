@@ -169,7 +169,7 @@ td {
   min-width: 200px;
 }
 .action {
-  min-width: 190px;
+  min-width: 210px;
 }
 .action button {
   padding: 5px;

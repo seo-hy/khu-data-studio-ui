@@ -40,7 +40,14 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="close-btn" @click="close">
+          <button class="cancel-btn" @click="cancel">
+            취소
+          </button>
+          <button
+            class="close-btn"
+            @click="close"
+            :disabled="selected === 0"
+          >
             완료
           </button>
         </div>
@@ -55,7 +62,7 @@ export default {
   props: ["datasetId"],
   data() {
     return {
-      selected: 1,
+      selected: 0,
     };
   },
   methods: {
@@ -65,16 +72,15 @@ export default {
     select(id) {
       this.selected = id;
     },
+    cancel() {
+      this.$router.push({ name: "home" });
+    },
   },
   computed: {
     ...mapGetters("dataset", ["getDatasets"]),
   },
   created() {
-    if (this.datasetId === 0) {
-      this.selected = this.getDatasets[0].id;
-    } else {
-      this.selected = this.datasetId;
-    }
+    this.selected = this.datasetId;
   },
 };
 </script>
@@ -138,11 +144,22 @@ export default {
   transition: all 0.5s;
 }
 
+.cancel-btn {
+  background-color: #373737;
+}
+.cancel-btn:hover {
+  background-color: #464646;
+}
+
 .close-btn {
   background-color: #3f8ae2;
 }
 .close-btn:hover {
   background-color: #2f6cb1;
+}
+
+.close-btn:disabled {
+  background-color: #3f8be23f;
 }
 .description {
   margin-left: 10px;
