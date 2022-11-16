@@ -45,13 +45,16 @@
         </div>
       </div>
       <div class="button-container">
-        <button class="select-btn">선택</button>
+        <button class="select-btn" @click="select">
+          선택
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script scoped>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -60,6 +63,8 @@ export default {
       week: "",
       month: "",
       startMonth: "",
+      st: "",
+      et: "",
       periods: [
         {
           text: "일별",
@@ -82,27 +87,39 @@ export default {
           subLabel: "계절 선택",
         },
       ],
-      seasons: [
-        {
-          text: "겨울 12~2월",
-          value: "4",
-        },
-        {
-          text: "봄 3~5월",
-          value: "1",
-        },
-        {
-          text: "여름 6~8월",
-          value: "2",
-        },
-        {
-          text: "가을 9~11월",
-          value: "3",
-        },
-      ],
     };
   },
   methods: {
+    ...mapMutations("dataset", ["SET_ST", "SET_ET"]),
+    select() {
+      if (this.selected === "0") {
+        this.st = this.date;
+        let date = new Date(this.st);
+        date.setDate(date.getDate() + 1);
+        this.et = this.formatDateToString(date);
+      } else if (this.selected === "1") {
+        this.st = this.getStartDateFromISOWeek(this.week);
+        let date = new Date(this.st);
+        date.setDate(date.getDate() + 7);
+        this.et = this.formatDateToString(date);
+      } else if (this.selected === "2") {
+        this.st = this.month;
+        let sDate = new Date(this.st);
+        this.st = this.formatDateToString(sDate);
+        let eDate = new Date(this.st);
+        eDate.setMonth(eDate.getMonth() + 1);
+        this.et = this.formatDateToString(eDate);
+      } else if (this.selected === "3") {
+        let sDate = new Date(this.startMonth);
+        this.st = this.formatDateToString(sDate);
+        let eDate = new Date(this.endMonth);
+        eDate.setMonth(eDate.getMonth() + 1);
+        this.et = this.formatDateToString(eDate);
+      }
+      this.SET_ST(this.st);
+      this.SET_ET(this.et);
+      this.$emit("selectPeriod", Date.now());
+    },
     getWeekFromISODate(dt) {
       dt.setHours(0, 0, 0, 0);
       dt.setDate(
@@ -138,7 +155,8 @@ export default {
         );
       }
 
-      return iSOweekStart;
+      var date = new Date(iSOweekStart);
+      return this.formatDateToString(date);
     },
     getStartMonth() {
       var currYear = Number(
@@ -158,12 +176,22 @@ export default {
 
       return `${currYear}-${currMonth}`;
     },
+    formatDateToString(input) {
+      const year = input.getFullYear();
+      const month = input.getMonth() + 1;
+      const date = input.getDate();
+      return `${year}-${
+        month >= 10 ? month : "0" + month
+      }-${date >= 10 ? date : "0" + date}`;
+    },
   },
+
   created() {
-    this.date = new Date().toISOString().substring(0, 10);
+    this.date = this.formatDateToString(new Date());
     this.week = this.getWeekFromISODate(new Date());
     this.month = new Date().toISOString().slice(0, 7);
     this.startMonth = this.getStartMonth();
+    this.select();
   },
   computed: {
     endMonth() {

@@ -36,6 +36,13 @@ const actions = {
       return res.data;
     });
   },
+  VISUALIZE(context, { request, idxCol }) {
+    return cleaning
+      .visualize(request, idxCol)
+      .then((res) => {
+        return res.data;
+      });
+  },
 };
 
 export default {

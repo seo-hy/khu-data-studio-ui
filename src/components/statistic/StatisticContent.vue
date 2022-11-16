@@ -99,10 +99,10 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import Spinner from "@/components/common/Spinner";
 export default {
-  props: ["datasetId"],
+  props: ["dataset", "changeDate"],
   components: {
     Spinner,
   },
@@ -111,7 +111,8 @@ export default {
       data: [],
       pearson: [],
       isLoadingPearson: true,
-      isLoadingStat: true,
+      isLoadingMean: true,
+      isLoadingStd: true,
       threshod: 0.5,
       inputThreshod: 0.5,
       stdList: [],
@@ -119,16 +120,20 @@ export default {
     };
   },
   methods: {
-    ...mapActions("dataset", ["FETCH_DATA"]),
+    ...mapActions("dataset", ["FETCH_DATA_RANGE"]),
     ...mapActions("cleaning", [
       "PEARSON_CORRELATION",
       "STD",
       "MEAN",
     ]),
+    ...mapGetters("dataset", ["getSt", "getEt"]),
     get_pearson_correlation() {
-      this.FETCH_DATA({
-        datasetId: this.datasetId,
+      this.isLoadingPearson = true;
+      this.FETCH_DATA_RANGE({
+        datasetId: this.dataset.id,
         limit: 0,
+        st: this.getSt(),
+        et: this.getEt(),
       }).then((res) => {
         this.data = res;
         this.PEARSON_CORRELATION({
@@ -140,27 +145,36 @@ export default {
       });
     },
     get_std() {
-      this.FETCH_DATA({
-        datasetId: this.datasetId,
+      this.isLoadingStd = true;
+
+      this.FETCH_DATA_RANGE({
+        datasetId: this.dataset.id,
         limit: 0,
+        st: this.getSt(),
+        et: this.getEt(),
       }).then((res) => {
         this.STD({
           request: res,
         }).then((res) => {
           this.stdList = res;
+          this.isLoadingStd = false;
         });
       });
     },
     get_mean() {
-      this.FETCH_DATA({
-        datasetId: this.datasetId,
+      this.isLoadingMean = true;
+      this.FETCH_DATA_RANGE({
+        datasetId: this.dataset.id,
         limit: 0,
+        st: this.getSt(),
+        et: this.getEt(),
       }).then((res) => {
         this.MEAN({
           request: res,
+          idxCol: this.dataset.dateTimeColumn,
         }).then((res) => {
           this.meanList = res;
-          this.isLoadingStat = false;
+          this.isLoadingMean = false;
         });
       });
     },
@@ -179,9 +193,21 @@ export default {
     },
   },
   created() {
-    this.get_pearson_correlation();
-    this.get_std();
     this.get_mean();
+    this.get_std();
+    this.get_pearson_correlation();
+  },
+  watch: {
+    changeDate: function () {
+      this.get_mean();
+      this.get_std();
+      this.get_pearson_correlation();
+    },
+  },
+  computed: {
+    isLoadingStat() {
+      return this.isLoadingMean && this.isLoadingStd;
+    },
   },
 };
 </script>

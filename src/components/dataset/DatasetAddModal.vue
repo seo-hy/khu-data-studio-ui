@@ -163,6 +163,7 @@ export default {
         userName: this.userName,
         password: this.password,
         tableName: this.tableName,
+        dateTimeColumn: this.dateTimeColumn,
       }).then((res) => {
         if (res.isConnected) {
           this.isSucceeded = true;

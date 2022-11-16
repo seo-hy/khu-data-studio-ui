@@ -28,6 +28,12 @@ const cleaning = {
   mean(request) {
     return axios.post("/cleaning-api/mean", request);
   },
+  visualize(request, idxCol) {
+    return axios.post(
+      "/cleaning-api/visualize?idx_col=" + idxCol,
+      request
+    );
+  },
 };
 
 export default cleaning;
