@@ -1,13 +1,9 @@
 <template>
-  <div class="datalist-container">
+  <div class="dataset-list-root">
     <div class="table-container">
       <table>
         <thead>
           <th>Name</th>
-          <th>Host</th>
-          <th>Port</th>
-          <th>Database</th>
-          <th>Table</th>
           <th>Action</th>
         </thead>
         <tbody>
@@ -16,10 +12,6 @@
             :key="dataset.id"
           >
             <td class="name">{{ dataset.name }}</td>
-            <td>{{ dataset.host }}</td>
-            <td>{{ dataset.port }}</td>
-            <td>{{ dataset.db }}</td>
-            <td>{{ dataset.tableName }}</td>
             <td class="action">
               <button
                 class="show-btn"
@@ -32,7 +24,20 @@
               >
                 <font-awesome-icon
                   icon="fa-solid fa-table"
-                />열람
+                />데이터 열람
+              </button>
+              <button
+                class="add-data-btn"
+                @click="
+                  openDatasetAddDataModal(
+                    dataset.id,
+                    dataset.name
+                  )
+                "
+              >
+                <font-awesome-icon
+                  icon="fa-solid fa-plus"
+                />데이터 추가
               </button>
               <button
                 class="edit-btn"
@@ -80,9 +85,9 @@
 </template>
 
 <script>
-import DatasetUpdateModal from "@/components/dataset/DatasetUpdateModal";
-import DatasetDeleteModal from "@/components/dataset/DatasetDeleteModal";
-import DatasetPreviewModal from "@/components/dataset/DatasetPreviewModal";
+import DatasetUpdateModal from "@/components/dataset/modal/DatasetUpdateModal";
+import DatasetDeleteModal from "@/components/dataset/modal/DatasetDeleteModal";
+import DatasetPreviewModal from "@/components/dataset/modal/DatasetPreviewModal";
 import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
@@ -135,36 +140,45 @@ export default {
 </script>
 
 <style scoped>
-.datalist-container {
-  height: calc(100% - 30px);
+.dataset-list-root {
+  height: 90%;
 }
 .table-container {
-  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+  height: calc(100% - 10px);
   overflow: auto;
-  height: calc(100% - 50px);
 }
 table {
   color: #e8e8e8;
   font-weight: 300;
-  border-collapse: collapse;
   text-align: center;
   font-size: 16px;
-  border: 1.5px solid #545454;
-  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 70%;
 }
 th {
+  position: sticky;
+  top: 0px;
   height: 35px;
   border: 1.5px solid #545454;
   font-size: 17px;
   font-weight: 400;
   background-color: #2c2c2c;
 }
-td {
-  border: 1px solid #353535;
-  height: 30px;
-  width: 12%;
+th:first-child {
+  border-right: none;
 }
 
+td {
+  border: 1.5px solid #353535;
+  height: 50px;
+  border-top: none;
+}
+td:first-child {
+  border-right: none;
+}
 .name {
   min-width: 200px;
 }
@@ -172,34 +186,43 @@ td {
   min-width: 210px;
 }
 .action button {
-  padding: 5px;
-  width: 60px;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 20px;
   margin: 5px;
   cursor: pointer;
   background-color: transparent;
   border-radius: 5px;
+  font-size: 15px;
 }
+
+button svg {
+  margin-right: 6px;
+}
+
 .show-btn {
   border: 1px solid rgb(157, 157, 157);
   color: rgb(157, 157, 157);
 }
-.show-btn svg {
-  margin-right: 3px;
+
+.add-data-btn {
+  border: 1px solid rgb(76, 135, 90);
+  color: rgb(76, 135, 90);
 }
 
 .edit-btn {
   border: 1px solid rgb(48, 119, 181);
   color: rgb(48, 119, 181);
 }
+.edit-btn svg {
+  margin-right: 2px;
+}
 .delete-btn {
   color: rgb(206, 54, 54);
   border: 1px solid rgb(206, 54, 54);
 }
-.delete-btn svg {
-  margin-right: 3px;
-}
 
 .action button:hover {
-  background-color: rgba(181, 181, 181, 0.182);
+  background-color: rgba(181, 181, 181, 0.065);
 }
 </style>

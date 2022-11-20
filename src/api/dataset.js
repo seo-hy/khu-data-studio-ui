@@ -1,26 +1,46 @@
 import axios from "axios";
 
 const dataset = {
-  save({
+  saveWithDatabase({
     name,
     host,
     port,
     db,
-    userName,
+    username,
     password,
-    tableName,
+    table,
     dateTimeColumn,
   }) {
-    return axios.post("/dataset-api/datasets", {
+    return axios.post("/dataset-api/datasets/database", {
       name,
       host,
       port,
       db,
-      userName,
+      username,
       password,
-      tableName,
+      table,
       dateTimeColumn,
     });
+  },
+  saveWithCsv({ name, dateTimeColumn, csv }) {
+    let formData = new FormData();
+    formData.append("csv", csv);
+    let request = [
+      {
+        name,
+        dateTimeColumn,
+      },
+    ];
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], {
+        type: "application/json",
+      })
+    );
+    return axios.post(
+      "/dataset-api/datasets/csv",
+      formData
+    );
   },
   get(datasetId) {
     return axios.get("/dataset-api/datasets/" + datasetId);

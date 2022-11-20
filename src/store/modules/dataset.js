@@ -31,41 +31,51 @@ const mutations = {
 };
 
 const actions = {
-  SAVE_DATASET(
+  SAVE_DATASET_WITH_DATABASE(
     context,
     {
       name,
       host,
       port,
       db,
-      userName,
+      username,
       password,
-      tableName,
+      table,
       dateTimeColumn,
     }
   ) {
-    return dataset
-      .save({
+    dataset
+      .saveWithDatabase({
         name,
         host,
         port,
         db,
-        userName,
+        username,
         password,
-        tableName,
+        table,
         dateTimeColumn,
       })
       .then((res) => {
         return res.data;
       });
   },
+  SAVE_DATASET_WITH_CSV(
+    context,
+    { name, dateTimeColumn, csv }
+  ) {
+    dataset
+      .saveWithCsv({ name, dateTimeColumn, csv })
+      .then((res) => {
+        return res.data;
+      });
+  },
   FETCH_DATASET(context, datasetId) {
-    return dataset.get(datasetId).then((res) => {
+    dataset.get(datasetId).then((res) => {
       return res.data;
     });
   },
   FETCH_DATASETS(context) {
-    return dataset.getList().then((res) => {
+    dataset.getList().then((res) => {
       context.commit("SET_DATASETS", res.data);
     });
   },
@@ -83,7 +93,7 @@ const actions = {
       dateTimeColumn,
     }
   ) {
-    return dataset
+    dataset
       .update({
         datasetId,
         name,
@@ -100,7 +110,7 @@ const actions = {
       });
   },
   DELETE_DATASET(context, { datasetId }) {
-    return dataset.delete(datasetId).then((res) => {
+    dataset.delete(datasetId).then((res) => {
       return res;
     });
   },
@@ -116,7 +126,7 @@ const actions = {
       dateTimeColumn,
     }
   ) {
-    return dataset
+    dataset
       .connect({
         host,
         port,
@@ -132,14 +142,14 @@ const actions = {
       .catch(() => {});
   },
   FETCH_DATA(context, { datasetId, limit }) {
-    return dataset
+    dataset
       .getData(datasetId, limit, "", "")
       .then((res) => {
         return res.data;
       });
   },
   FETCH_DATA_RANGE(context, { datasetId, limit }) {
-    return dataset
+    dataset
       .getData(
         datasetId,
         limit,
@@ -151,16 +161,14 @@ const actions = {
       });
   },
   FETCH_COLUMN(context, { datasetId }) {
-    return dataset.getData(datasetId).then((res) => {
+    dataset.getData(datasetId).then((res) => {
       return res.data;
     });
   },
   UPDATE_DATA(context, { datasetId, request }) {
-    return dataset
-      .updateData(datasetId, request)
-      .then((res) => {
-        return res.data;
-      });
+    dataset.updateData(datasetId, request).then((res) => {
+      return res.data;
+    });
   },
 };
 
