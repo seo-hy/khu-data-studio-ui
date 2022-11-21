@@ -6,10 +6,13 @@
           <div class="title">데이터셋 삭제</div>
         </div>
         <div class="modal-body">
-          " {{ datasetName }} " <br />데이터셋을
+          <span>{{ dataset.name }}</span> 데이터셋을
           삭제하시겠습니까?
         </div>
         <div class="modal-footer">
+          <div class="msg" v-if="msg.length !== 0">
+            {{ msg }}
+          </div>
           <button class="delete-btn" @click="deleteData">
             삭제
           </button>
@@ -25,9 +28,11 @@
 <script>
 import { mapActions } from "vuex";
 export default {
-  props: ["datasetId", "datasetName"],
+  props: ["dataset"],
   data() {
-    return {};
+    return {
+      msg: "",
+    };
   },
   methods: {
     ...mapActions("dataset", [
@@ -38,8 +43,9 @@ export default {
       this.$emit("close");
     },
     deleteData() {
+      this.msg = "데이터셋을 삭제하고 있습니다.";
       this.DELETE_DATASET({
-        datasetId: this.datasetId,
+        datasetId: this.dataset.id,
       }).then(() => {
         this.FETCH_DATASETS().then(() => {
           this.$emit("close");
@@ -122,5 +128,19 @@ export default {
 }
 .close-btn:hover {
   background-color: #464646;
+}
+.msg {
+  background-color: #2f6cb143;
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 13px;
+  color: white;
+  margin-right: 5px;
+}
+span {
+  color: rgb(234, 98, 98);
+  font-weight: 400;
+  font-size: 20px;
+  margin-right: 3px;
 }
 </style>

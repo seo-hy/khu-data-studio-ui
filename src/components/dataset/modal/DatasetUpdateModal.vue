@@ -4,9 +4,6 @@
       <div class="modal-container">
         <div class="modal-header">
           <div class="title">데이터셋 수정</div>
-          <div class="description">
-            데이터베이스 테이블 접속 정보를 입력하세요.
-          </div>
         </div>
         <div class="modal-body">
           <div class="input">
@@ -17,86 +14,6 @@
               autocomplete="off"
               v-model="name"
             />
-          </div>
-          <div class="input">
-            <label for="host">Host</label>
-            <input
-              type="text"
-              id="host"
-              autocomplete="off"
-              v-model="host"
-            />
-          </div>
-          <div class="input">
-            <label for="port">Port</label>
-            <input
-              type="text"
-              id="port"
-              autocomplete="off"
-              v-model="port"
-            />
-          </div>
-          <div class="input">
-            <label for="db">Database</label>
-            <input
-              type="text"
-              id="db"
-              autocomplete="off"
-              v-model="db"
-            />
-          </div>
-          <div class="input">
-            <label for="user">User</label>
-            <input
-              type="text"
-              id="user"
-              autocomplete="off"
-              v-model="userName"
-            />
-          </div>
-          <div class="input">
-            <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              autocomplete="off"
-              v-model="password"
-            />
-          </div>
-          <div class="input">
-            <label for="table">Table</label>
-            <input
-              type="text"
-              id="table"
-              autocomplete="off"
-              v-model="tableName"
-            />
-          </div>
-          <div class="input">
-            <label for="table">Datetime Column</label>
-            <input
-              type="text"
-              id="dateTimeColumn"
-              autocomplete="off"
-              v-model="dateTimeColumn"
-            />
-          </div>
-          <div class="test">
-            <button class="test-btn" @click="connect">
-              Test Connection
-            </button>
-            <div
-              class="test-msg test-succeeded"
-              v-if="isSucceeded"
-            >
-              Succeeded
-            </div>
-            <div
-              class="test-msg test-failed"
-              v-if="isFailed"
-            >
-              Failed
-            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -118,23 +35,13 @@ export default {
   props: ["dataset"],
   data() {
     return {
-      isFailed: false,
-      isSucceeded: false,
       name: this.dataset.name,
-      host: this.dataset.host,
-      port: this.dataset.port,
-      db: this.dataset.db,
-      userName: this.dataset.userName,
-      password: this.dataset.password,
-      tableName: this.dataset.tableName,
-      dateTimeColumn: this.dataset.dateTimeColumn,
     };
   },
   methods: {
     ...mapActions("dataset", [
       "FETCH_DATASETS",
       "UPDATE_DATASET",
-      "CONNECT",
     ]),
     close() {
       this.$emit("close");
@@ -143,41 +50,10 @@ export default {
       this.UPDATE_DATASET({
         datasetId: this.dataset.id,
         name: this.name,
-        host: this.host,
-        port: this.port,
-        db: this.db,
-        userName: this.userName,
-        password: this.password,
-        tableName: this.tableName,
-        dateTimeColumn: this.dateTimeColumn,
       }).then(() => {
-        this.FETCH_DATASETS();
-      });
-      this.$emit("close");
-    },
-    connect() {
-      this.isSucceeded = false;
-      this.isFailed = false;
-      this.CONNECT({
-        host: this.host,
-        port: this.port,
-        db: this.db,
-        userName: this.userName,
-        password: this.password,
-        tableName: this.tableName,
-        dateTimeColumn: this.dateTimeColumn,
-      }).then((res) => {
-        if (res.isConnected) {
-          this.isSucceeded = true;
-          setTimeout(() => {
-            this.isSucceeded = false;
-          }, 800);
-        } else {
-          this.isFailed = true;
-          setTimeout(() => {
-            this.isFailed = false;
-          }, 800);
-        }
+        this.FETCH_DATASETS().then(() => {
+          this.$emit("close");
+        });
       });
     },
   },
@@ -260,32 +136,7 @@ input {
   padding: 15px 20px;
   border-top: 0.2px #969696 solid;
 }
-.test {
-  margin-top: 20px;
-  margin-bottom: 5px;
-  display: flex;
-}
-.test-btn {
-  background-color: transparent;
-  border: 1px #2f6cb1 solid;
-  color: #2f6cb1;
-  font-size: 15px;
-  cursor: pointer;
-  border-radius: 5px;
-  height: 22px;
-}
-.test-btn:hover {
-  background-color: #2f6cb134;
-}
-.test-msg {
-  margin: 0px 10px;
-}
-.test-succeeded {
-  color: #42a45e;
-}
-.test-failed {
-  color: #b54949;
-}
+
 .modal-footer button {
   width: 60px;
   height: 30px;

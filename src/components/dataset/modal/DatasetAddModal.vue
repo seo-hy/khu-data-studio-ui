@@ -170,8 +170,9 @@
               <div class="preview-header">
                 <div class="label">Preview</div>
                 <div
-                  class="msg preview-msg"
+                  class="msg"
                   v-if="previewMsg.length !== 0"
+                  :class="{ 'error-msg': previewError }"
                 >
                   {{ previewMsg }}
                 </div>
@@ -233,8 +234,9 @@
         </div>
         <div class="modal-footer">
           <div
-            class="msg save-msg"
+            class="msg"
             v-if="saveMsg.length !== 0"
+            :class="{ 'error-msg': saveError }"
           >
             {{ saveMsg }}
           </div>
@@ -277,10 +279,13 @@ export default {
       ],
       dataSourceList: [{ value: 0, text: "MySQL" }],
       saveMsg: "",
+      saveError: false,
       previewMsg: "",
+      previewError: false,
       data: {},
     };
   },
+  computed: {},
   methods: {
     ...mapActions("dataset", [
       "FETCH_DATASETS",
@@ -293,6 +298,8 @@ export default {
       this.$emit("close");
     },
     save() {
+      this.validate = true;
+      this.saveError = false;
       this.saveMsg = "데이터를 확인하고 있습니다.";
       if (this.selected === 0) {
         this.SAVE_DATASET_WITH_DATABASE({
@@ -310,8 +317,9 @@ export default {
               this.$emit("close");
             });
           })
-          .catch(() => {
-            this.saveMsg = "저장 실패하였습니다.";
+          .catch((err) => {
+            this.saveError = true;
+            this.saveMsg = err.response.data.message;
           });
       } else {
         this.SAVE_DATASET_WITH_CSV({
@@ -324,11 +332,13 @@ export default {
               this.$emit("close");
             });
           })
-          .catch(() => {
-            this.saveMsg = "저장 실패하였습니다.";
+          .catch((err) => {
+            this.saveError = true;
+            this.saveMsg = err.response.data.message;
           });
       }
     },
+
     handleCsvChange(e) {
       this.csv = e.target.files[0];
     },
@@ -336,6 +346,11 @@ export default {
       this.selected = value;
       this.data = {};
       this.clearInput();
+      this.saveMsg = "";
+      this.saveError = false;
+      this.previewMsg = "";
+      this.previewError = false;
+      this.csv = "";
     },
     clearInput() {
       this.name = "";
@@ -350,9 +365,12 @@ export default {
     isDateTimeColumn(type) {
       return type === "DATETIME";
     },
+
     preview() {
       this.data = {};
+      this.previewError = false;
       this.previewMsg = "데이터를 불러오고 있습니다.";
+      this.previewErrMsg = "";
       this.isLoading = true;
       if (this.selected === 0) {
         this.PREVIEW_WITH_DATABASE({
@@ -369,8 +387,9 @@ export default {
             this.previewMsg = "";
             this.isLoading = false;
           })
-          .catch(() => {
-            this.previewMsg = "실패하였습니다.";
+          .catch((err) => {
+            this.previewError = true;
+            this.previewMsg = err.response.data.message;
             this.isLoading = false;
           });
       } else {
@@ -383,8 +402,9 @@ export default {
             this.previewMsg = "";
             this.isLoading = false;
           })
-          .catch(() => {
-            this.previewMsg = "실패하였습니다.";
+          .catch((err) => {
+            this.previewError = true;
+            this.previewMsg = err.response.data.message;
             this.isLoading = false;
           });
       }
@@ -523,13 +543,6 @@ export default {
   display: flex;
   margin-top: 5px;
 }
-.preview .label {
-}
-.preview-msg {
-  margin-left: 10px;
-  font-weight: 300;
-  color: rgb(213, 213, 213);
-}
 
 .preview-btn {
   position: absolute;
@@ -551,13 +564,14 @@ export default {
   display: flex;
   justify-content: right;
   align-items: center;
-  padding: 12px 20px;
+  padding: 0px 20px;
   position: absolute;
   bottom: 0px;
   right: 0px;
   width: 100%;
   border-top: 0.2px #969696 solid;
   box-sizing: border-box;
+  height: 50px;
 }
 input::file-selector-button {
   width: 70px;
@@ -567,7 +581,7 @@ input::file-selector-button {
   font-weight: 400;
   border: 0.5px #b4b4b4a6 solid;
   cursor: pointer;
-  background-color: #2374d0;
+  background-color: #3f8ae2;
 }
 .preview-table-container {
   display: flex;
@@ -587,13 +601,14 @@ table {
   overflow: auto;
 }
 th {
-  height: 20px;
   border: 1px solid #545454;
   border-top: none;
   font-size: 12px;
   font-weight: 400;
   background-color: #2c2c2c;
   min-width: 40px;
+  border-top: none;
+  padding: 3px 5px;
 }
 th:first-child {
   border-right: none;
@@ -604,6 +619,7 @@ td {
   width: 12%;
 }
 .datetime-td {
+  min-width: 130px;
   background-color: #2c2c2c;
   border-top: none;
 }
@@ -637,16 +653,20 @@ td {
   margin-top: 40px;
   font-size: 5px;
 }
-.save-msg {
-  font-weight: 300;
-  margin-right: 5px;
-  color: rgb(213, 213, 213);
-}
+
 .msg {
-  background-color: #2f6cb143;
+  color: #3f8ae2;
   border-radius: 5px;
-  padding: 3px 10px;
-  font-size: 13px;
-  color: white;
+  padding: 2px 8px;
+  font-size: 14px;
+  font-weight: 300;
+  margin: 0 5px;
+}
+
+.error-msg {
+  color: rgb(210, 29, 29);
+}
+.input .required {
+  outline: 1.5px #7e2020a6 solid;
 }
 </style>

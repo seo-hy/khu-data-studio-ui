@@ -85,26 +85,9 @@ const dataset = {
   getList() {
     return axios.get("/dataset-api/datasets");
   },
-  update({
-    datasetId,
-    name,
-    host,
-    port,
-    db,
-    userName,
-    password,
-    tableName,
-    dateTimeColumn,
-  }) {
+  update({ datasetId, name }) {
     return axios.put("/dataset-api/datasets/" + datasetId, {
       name,
-      host,
-      port,
-      db,
-      userName,
-      password,
-      tableName,
-      dateTimeColumn,
     });
   },
   delete(datasetId) {
@@ -112,24 +95,10 @@ const dataset = {
       "/dataset-api/datasets/" + datasetId
     );
   },
-  connect({
-    host,
-    port,
-    userName,
-    password,
-    db,
-    tableName,
-    dateTimeColumn,
-  }) {
-    return axios.post("/dataset-api/datasets/connect", {
-      host,
-      port,
-      db,
-      userName,
-      password,
-      tableName,
-      dateTimeColumn,
-    });
+  previewData({ datasetId }) {
+    return axios.get(
+      "/dataset-api/datasets/" + datasetId + "/data/preview"
+    );
   },
   getData(datasetId, limit, st, et) {
     return axios.get(
@@ -141,6 +110,48 @@ const dataset = {
         st +
         "&et=" +
         et
+    );
+  },
+  updatewWithDatabase({
+    datasetId,
+    host,
+    port,
+    db,
+    username,
+    password,
+    table,
+    dateTimeColumn,
+  }) {
+    return axios.post(
+      "/dataset-api/datasets/" +
+        datasetId +
+        "update/database",
+      {
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+        dateTimeColumn,
+      }
+    );
+  },
+  updateWithCsv({ datasetId, dateTimeColumn, csv }) {
+    let formData = new FormData();
+    formData.append("csv", csv);
+    let request = {
+      dateTimeColumn,
+    };
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], {
+        type: "application/json",
+      })
+    );
+    return axios.post(
+      "/dataset-api/datasets/" + datasetId + "/update/csv",
+      formData
     );
   },
   getColumn(datasetId) {

@@ -57,9 +57,6 @@ const actions = {
       })
       .then((res) => {
         return res.data;
-      })
-      .catch((res) => {
-        throw Error(res);
       });
   },
   SAVE_DATASET_WITH_CSV(
@@ -70,9 +67,6 @@ const actions = {
       .saveWithCsv({ name, dateTimeColumn, csv })
       .then((res) => {
         return res.data;
-      })
-      .catch((res) => {
-        throw Error(res);
       });
   },
   PREVIEW_WITH_DATABASE(
@@ -99,9 +93,6 @@ const actions = {
       })
       .then((res) => {
         return res.data;
-      })
-      .catch((res) => {
-        throw Error(res);
       });
   },
   PREVIEW_WITH_CSV(context, { dateTimeColumn, csv }) {
@@ -109,13 +100,10 @@ const actions = {
       .previewWithCsv({ dateTimeColumn, csv })
       .then((res) => {
         return res.data;
-      })
-      .catch((res) => {
-        throw Error(res);
       });
   },
   FETCH_DATASET(context, datasetId) {
-    dataset.get(datasetId).then((res) => {
+    return dataset.get(datasetId).then((res) => {
       return res.data;
     });
   },
@@ -138,7 +126,7 @@ const actions = {
       dateTimeColumn,
     }
   ) {
-    dataset
+    return dataset
       .update({
         datasetId,
         name,
@@ -157,32 +145,12 @@ const actions = {
   DELETE_DATASET(context, { datasetId }) {
     return dataset.delete(datasetId);
   },
-  CONNECT(
-    context,
-    {
-      host,
-      port,
-      db,
-      userName,
-      password,
-      tableName,
-      dateTimeColumn,
-    }
-  ) {
-    dataset
-      .connect({
-        host,
-        port,
-        db,
-        userName,
-        password,
-        tableName,
-        dateTimeColumn,
-      })
+  PREVIEW_DATA(context, { datasetId }) {
+    return dataset
+      .previewData({ datasetId })
       .then((res) => {
         return res.data;
-      })
-      .catch(() => {});
+      });
   },
   FETCH_DATA(context, { datasetId, limit }) {
     dataset

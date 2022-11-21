@@ -7,17 +7,15 @@
           <th>Action</th>
         </thead>
         <tbody>
-          <tr v-for="dataset in datasets" :key="dataset.id">
+          <tr
+            v-for="dataset in getDatasets"
+            :key="dataset.id"
+          >
             <td class="name">{{ dataset.name }}</td>
             <td class="action">
               <button
                 class="show-btn"
-                @click="
-                  openDatasetPreviewModal(
-                    dataset.id,
-                    dataset.name
-                  )
-                "
+                @click="openDatasetPreviewModal(dataset)"
               >
                 <font-awesome-icon
                   icon="fa-solid fa-table"
@@ -25,12 +23,7 @@
               </button>
               <button
                 class="add-data-btn"
-                @click="
-                  openDatasetAddDataModal(
-                    dataset.id,
-                    dataset.name
-                  )
-                "
+                @click="openDatasetAddDataModal(dataset)"
               >
                 <font-awesome-icon
                   icon="fa-solid fa-plus"
@@ -38,19 +31,14 @@
               </button>
               <button
                 class="edit-btn"
-                @click="openDatasetUpdateModal(dataset.id)"
+                @click="openDatasetUpdateModal(dataset)"
               >
                 <font-awesome-icon icon="fa-solid fa-pen" />
                 수정
               </button>
               <button
                 class="delete-btn"
-                @click="
-                  openDatasetDeleteModal(
-                    dataset.id,
-                    dataset.name
-                  )
-                "
+                @click="openDatasetDeleteModal(dataset)"
               >
                 <font-awesome-icon
                   icon="fa-solid fa-trash-can"
@@ -69,14 +57,17 @@
     <DatasetDeleteModal
       v-if="showDatasetDeleteModal"
       @close="closeDatasetDeleteModal"
-      :datasetId="datasetId"
-      :datasetName="datasetName"
+      :dataset="dataset"
     />
     <DatasetPreviewModal
       v-if="showDatasetPreviewModal"
       @close="closeDatasetPreviewModal"
-      :datasetId="datasetId"
-      :datasetName="datasetName"
+      :dataset="dataset"
+    />
+    <DatasetAddDataModal
+      v-if="showDatasetAddDataModal"
+      @close="closeDatasetAddDataModal"
+      :dataset="dataset"
     />
   </div>
 </template>
@@ -85,15 +76,16 @@
 import DatasetUpdateModal from "@/components/dataset/modal/DatasetUpdateModal";
 import DatasetDeleteModal from "@/components/dataset/modal/DatasetDeleteModal";
 import DatasetPreviewModal from "@/components/dataset/modal/DatasetPreviewModal";
-import { mapState, mapGetters, mapActions } from "vuex";
+import DatasetAddDataModal from "@/components/dataset/modal/DatasetAddDataModal";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
     DatasetUpdateModal,
     DatasetDeleteModal,
     DatasetPreviewModal,
+    DatasetAddDataModal,
   },
   computed: {
-    ...mapState("dataset", ["datasets"]),
     ...mapGetters("dataset", ["getDatasets"]),
   },
   data() {
@@ -101,6 +93,7 @@ export default {
       showDatasetUpdateModal: false,
       showDatasetDeleteModal: false,
       showDatasetPreviewModal: false,
+      showDatasetAddDataModal: false,
       dataset: {},
       datasetId: 0,
       datasetName: "",
@@ -108,30 +101,33 @@ export default {
   },
   methods: {
     ...mapActions("dataset", ["FETCH_DATASET"]),
-    openDatasetUpdateModal(datasetId) {
-      this.FETCH_DATASET(datasetId).then((res) => {
-        this.dataset = res;
-        this.showDatasetUpdateModal = true;
-      });
+    openDatasetUpdateModal(dataset) {
+      this.dataset = dataset;
+      this.showDatasetUpdateModal = true;
     },
     closeDatasetUpdateModal() {
       this.showDatasetUpdateModal = false;
     },
-    openDatasetDeleteModal(datasetId, datasetName) {
-      this.datasetId = datasetId;
-      this.datasetName = datasetName;
+    openDatasetDeleteModal(dataset) {
+      this.dataset = dataset;
       this.showDatasetDeleteModal = true;
     },
     closeDatasetDeleteModal() {
       this.showDatasetDeleteModal = false;
     },
-    openDatasetPreviewModal(datasetId, datasetName) {
-      this.datasetId = datasetId;
-      this.datasetName = datasetName;
+    openDatasetPreviewModal(dataset) {
+      this.dataset = dataset;
       this.showDatasetPreviewModal = true;
     },
     closeDatasetPreviewModal() {
       this.showDatasetPreviewModal = false;
+    },
+    openDatasetAddDataModal(dataset) {
+      this.dataset = dataset;
+      this.showDatasetAddDataModal = true;
+    },
+    closeDatasetAddDataModal() {
+      this.showDatasetAddDataModal = false;
     },
   },
 };
@@ -156,7 +152,6 @@ table {
   font-weight: 300;
   text-align: center;
   font-size: 16px;
-  border-collapse: separate;
   border-spacing: 0;
   display: block;
   overflow: auto;
