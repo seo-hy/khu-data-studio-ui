@@ -40,6 +40,7 @@
               </div>
               <div class="input">
                 <div>
+                  <!-- Todo : Not in api request -->
                   <label for="host">Data Source</label>
                   <select v-model="dataSource">
                     <option
@@ -72,12 +73,12 @@
               </div>
               <div class="input">
                 <div>
-                  <label for="user">User</label>
+                  <label for="username">User</label>
                   <input
                     type="text"
-                    id="user"
+                    id="username"
                     autocomplete="off"
-                    v-model="userName"
+                    v-model="username"
                   />
                 </div>
                 <div>
@@ -106,7 +107,7 @@
                     type="text"
                     id="table"
                     autocomplete="off"
-                    v-model="tableName"
+                    v-model="table"
                   />
                 </div>
                 <div>
@@ -157,20 +158,86 @@
                     type="file"
                     id="csv"
                     accept=".csv"
+                    @change="handleCsvChange"
                   />
                 </div>
               </div>
             </div>
             <div class="preview">
-              <button class="preview-btn" @click="connect">
+              <button class="preview-btn" @click="preview">
                 Preview
               </button>
-              <div class="label">Preview</div>
+              <div class="preview-header">
+                <div class="label">Preview</div>
+                <div
+                  class="msg preview-msg"
+                  v-if="previewMsg.length !== 0"
+                >
+                  {{ previewMsg }}
+                </div>
+              </div>
               <Spinner class="spinner" v-if="isLoading" />
+              <div
+                class="preview-table-container"
+                v-if="!isLoading"
+              >
+                <table
+                  v-if="Object.keys(this.data).length !== 0"
+                >
+                  <thead>
+                    <template
+                      v-for="(col, i) in data.column"
+                    >
+                      <th
+                        :key="i"
+                        v-if="isDateTimeColumn(col.type)"
+                      >
+                        {{ col.name }}
+                      </th>
+                    </template>
+                    <template
+                      v-for="(col, i) in data.column"
+                    >
+                      <th
+                        :key="i"
+                        v-if="!isDateTimeColumn(col.type)"
+                      >
+                        {{ col.name }}
+                      </th>
+                    </template>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(row, i) in data.data"
+                      :key="i"
+                    >
+                      <td class="datetime-td">
+                        {{ row.date }}
+                      </td>
+                      <template
+                        v-for="(col, j) in data.column"
+                      >
+                        <td
+                          :key="j"
+                          v-if="!isDateTimeColumn(col.type)"
+                        >
+                          {{ row.value[col.name] }}
+                        </td>
+                      </template>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
+          <div
+            class="msg save-msg"
+            v-if="saveMsg.length !== 0"
+          >
+            {{ saveMsg }}
+          </div>
           <button class="save-btn" @click="save">
             저장
           </button>
@@ -192,75 +259,135 @@ export default {
   },
   data() {
     return {
-      isLoading: true,
+      isLoading: false,
       dataSource: 0,
       name: "",
-      host: "",
-      port: "",
-      db: "",
-      username: "",
-      password: "",
-      table: "",
-      dateTimeColumn: "",
+      host: "13.209.8.19",
+      port: "3306",
+      db: "smartplant",
+      username: "seohyun",
+      password: "seohyun123",
+      table: "hr_sensor_dataset",
+      dateTimeColumn: "created_at",
+      csv: "",
       selected: 0,
       methodList: [
         { value: 0, text: "데이터베이스 테이블 " },
         { value: 1, text: "csv 파일" },
       ],
       dataSourceList: [{ value: 0, text: "MySQL" }],
+      saveMsg: "",
+      previewMsg: "",
+      data: {},
     };
   },
   methods: {
     ...mapActions("dataset", [
       "FETCH_DATASETS",
-      "SAVE_DATASET",
-      "CONNECT",
+      "SAVE_DATASET_WITH_DATABASE",
+      "SAVE_DATASET_WITH_CSV",
+      "PREVIEW_WITH_DATABASE",
+      "PREVIEW_WITH_CSV",
     ]),
     close() {
       this.$emit("close");
     },
     save() {
-      this.SAVE_DATASET({
-        name: this.name,
-        host: this.host,
-        port: this.port,
-        db: this.db,
-        userName: this.userName,
-        password: this.password,
-        tableName: this.tableName,
-        dateTimeColumn: this.dateTimeColumn,
-      }).then(() => {
-        this.FETCH_DATASETS();
-        this.$emit("close");
-      });
+      this.saveMsg = "데이터를 확인하고 있습니다.";
+      if (this.selected === 0) {
+        this.SAVE_DATASET_WITH_DATABASE({
+          name: this.name,
+          host: this.host,
+          port: this.port,
+          db: this.db,
+          username: this.username,
+          password: this.password,
+          table: this.table,
+          dateTimeColumn: this.dateTimeColumn,
+        })
+          .then(() => {
+            this.FETCH_DATASETS().then(() => {
+              this.$emit("close");
+            });
+          })
+          .catch(() => {
+            this.saveMsg = "저장 실패하였습니다.";
+          });
+      } else {
+        this.SAVE_DATASET_WITH_CSV({
+          name: this.name,
+          dateTimeColumn: this.dateTimeColumn,
+          csv: this.csv,
+        })
+          .then(() => {
+            this.FETCH_DATASETS().then(() => {
+              this.$emit("close");
+            });
+          })
+          .catch(() => {
+            this.saveMsg = "저장 실패하였습니다.";
+          });
+      }
+    },
+    handleCsvChange(e) {
+      this.csv = e.target.files[0];
     },
     select(value) {
       this.selected = value;
+      this.data = {};
+      this.clearInput();
     },
-    connect() {
-      this.isSucceeded = false;
-      this.isFailed = false;
-      this.CONNECT({
-        host: this.host,
-        port: this.port,
-        db: this.db,
-        userName: this.userName,
-        password: this.password,
-        tableName: this.tableName,
-        dateTimeColumn: this.dateTimeColumn,
-      }).then((res) => {
-        if (res.isConnected) {
-          this.isSucceeded = true;
-          setTimeout(() => {
-            this.isSucceeded = false;
-          }, 800);
-        } else {
-          this.isFailed = true;
-          setTimeout(() => {
-            this.isFailed = false;
-          }, 800);
-        }
-      });
+    clearInput() {
+      this.name = "";
+      this.host = "";
+      this.port = "";
+      this.username = "";
+      this.password = "";
+      this.db = "";
+      this.table = "";
+      this.dateTimeColumn = "";
+    },
+    isDateTimeColumn(type) {
+      return type === "DATETIME";
+    },
+    preview() {
+      this.data = {};
+      this.previewMsg = "데이터를 불러오고 있습니다.";
+      this.isLoading = true;
+      if (this.selected === 0) {
+        this.PREVIEW_WITH_DATABASE({
+          host: this.host,
+          port: this.port,
+          db: this.db,
+          username: this.username,
+          password: this.password,
+          table: this.table,
+          dateTimeColumn: this.dateTimeColumn,
+        })
+          .then((res) => {
+            this.data = res;
+            this.previewMsg = "";
+            this.isLoading = false;
+          })
+          .catch(() => {
+            this.previewMsg = "실패하였습니다.";
+            this.isLoading = false;
+          });
+      } else {
+        this.PREVIEW_WITH_CSV({
+          dateTimeColumn: this.dateTimeColumn,
+          csv: this.csv,
+        })
+          .then((res) => {
+            this.data = res;
+            this.previewMsg = "";
+            this.isLoading = false;
+          })
+          .catch(() => {
+            this.previewMsg = "실패하였습니다.";
+            this.isLoading = false;
+          });
+      }
     },
   },
 };
@@ -286,11 +413,12 @@ export default {
 
 .modal-container {
   width: 550px;
-  height: 600px;
+  height: 650px;
   margin: 0px auto;
   color: #e8e8e8;
   background-color: #252525;
   border-radius: 7px;
+  position: relative;
 }
 
 .modal-header {
@@ -333,7 +461,7 @@ export default {
 }
 .content {
   background-color: #1f1f1f;
-  height: 420px;
+  height: 475px;
   border-radius: 0 0 10px 10px;
 }
 .input-container {
@@ -391,6 +519,17 @@ export default {
   border-top: 1px solid #494949a4;
   position: relative;
 }
+.preview-header {
+  display: flex;
+  margin-top: 5px;
+}
+.preview .label {
+}
+.preview-msg {
+  margin-left: 10px;
+  font-weight: 300;
+  color: rgb(213, 213, 213);
+}
 
 .preview-btn {
   position: absolute;
@@ -407,15 +546,18 @@ export default {
 .preview-btn:hover {
   background-color: #2f6cb134;
 }
-.preview .label {
-  margin-top: 5px;
-}
+
 .modal-footer {
   display: flex;
   justify-content: right;
-  padding: 15px 20px;
-  height: 20px;
+  align-items: center;
+  padding: 12px 20px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 100%;
   border-top: 0.2px #969696 solid;
+  box-sizing: border-box;
 }
 input::file-selector-button {
   width: 70px;
@@ -427,21 +569,43 @@ input::file-selector-button {
   cursor: pointer;
   background-color: #2374d0;
 }
-
-.test {
-  margin-top: 20px;
-  margin-bottom: 5px;
+.preview-table-container {
   display: flex;
+  justify-content: center;
+  height: 175px;
+  margin-top: 10px;
 }
-
-.test-msg {
-  margin: 0px 10px;
+table {
+  color: #e8e8e8;
+  font-weight: 300;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: center;
+  font-size: 12px;
+  border: 1.5px solid #545454;
+  display: block;
+  overflow: auto;
 }
-.test-succeeded {
-  color: #42a45e;
+th {
+  height: 20px;
+  border: 1px solid #545454;
+  border-top: none;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #2c2c2c;
+  min-width: 40px;
 }
-.test-failed {
-  color: #b54949;
+th:first-child {
+  border-right: none;
+}
+td {
+  border: 1px solid #353535;
+  height: 30px;
+  width: 12%;
+}
+.datetime-td {
+  background-color: #2c2c2c;
+  border-top: none;
 }
 .modal-footer button {
   width: 60px;
@@ -472,5 +636,17 @@ input::file-selector-button {
 .spinner {
   margin-top: 40px;
   font-size: 5px;
+}
+.save-msg {
+  font-weight: 300;
+  margin-right: 5px;
+  color: rgb(213, 213, 213);
+}
+.msg {
+  background-color: #2f6cb143;
+  border-radius: 5px;
+  padding: 3px 10px;
+  font-size: 13px;
+  color: white;
 }
 </style>

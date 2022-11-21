@@ -25,12 +25,10 @@ const dataset = {
   saveWithCsv({ name, dateTimeColumn, csv }) {
     let formData = new FormData();
     formData.append("csv", csv);
-    let request = [
-      {
-        name,
-        dateTimeColumn,
-      },
-    ];
+    let request = {
+      name,
+      dateTimeColumn,
+    };
     formData.append(
       "request",
       new Blob([JSON.stringify(request)], {
@@ -39,6 +37,45 @@ const dataset = {
     );
     return axios.post(
       "/dataset-api/datasets/csv",
+      formData
+    );
+  },
+  previewWithDatabase({
+    host,
+    port,
+    db,
+    username,
+    password,
+    table,
+    dateTimeColumn,
+  }) {
+    return axios.post(
+      "/dataset-api/datasets/preview/database",
+      {
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+        dateTimeColumn,
+      }
+    );
+  },
+  previewWithCsv({ dateTimeColumn, csv }) {
+    let formData = new FormData();
+    formData.append("csv", csv);
+    let request = {
+      dateTimeColumn,
+    };
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], {
+        type: "application/json",
+      })
+    );
+    return axios.post(
+      "/dataset-api/datasets/preview/csv",
       formData
     );
   },

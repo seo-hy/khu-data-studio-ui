@@ -44,7 +44,7 @@ const actions = {
       dateTimeColumn,
     }
   ) {
-    dataset
+    return dataset
       .saveWithDatabase({
         name,
         host,
@@ -57,16 +57,61 @@ const actions = {
       })
       .then((res) => {
         return res.data;
+      })
+      .catch((res) => {
+        throw Error(res);
       });
   },
   SAVE_DATASET_WITH_CSV(
     context,
     { name, dateTimeColumn, csv }
   ) {
-    dataset
+    return dataset
       .saveWithCsv({ name, dateTimeColumn, csv })
       .then((res) => {
         return res.data;
+      })
+      .catch((res) => {
+        throw Error(res);
+      });
+  },
+  PREVIEW_WITH_DATABASE(
+    context,
+    {
+      host,
+      port,
+      db,
+      username,
+      password,
+      table,
+      dateTimeColumn,
+    }
+  ) {
+    return dataset
+      .previewWithDatabase({
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+        dateTimeColumn,
+      })
+      .then((res) => {
+        return res.data;
+      })
+      .catch((res) => {
+        throw Error(res);
+      });
+  },
+  PREVIEW_WITH_CSV(context, { dateTimeColumn, csv }) {
+    return dataset
+      .previewWithCsv({ dateTimeColumn, csv })
+      .then((res) => {
+        return res.data;
+      })
+      .catch((res) => {
+        throw Error(res);
       });
   },
   FETCH_DATASET(context, datasetId) {
@@ -75,7 +120,7 @@ const actions = {
     });
   },
   FETCH_DATASETS(context) {
-    dataset.getList().then((res) => {
+    return dataset.getList().then((res) => {
       context.commit("SET_DATASETS", res.data);
     });
   },
@@ -110,9 +155,7 @@ const actions = {
       });
   },
   DELETE_DATASET(context, { datasetId }) {
-    dataset.delete(datasetId).then((res) => {
-      return res;
-    });
+    return dataset.delete(datasetId);
   },
   CONNECT(
     context,

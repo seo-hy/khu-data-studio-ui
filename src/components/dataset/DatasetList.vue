@@ -7,10 +7,7 @@
           <th>Action</th>
         </thead>
         <tbody>
-          <tr
-            v-for="dataset in getDatasets"
-            :key="dataset.id"
-          >
+          <tr v-for="dataset in datasets" :key="dataset.id">
             <td class="name">{{ dataset.name }}</td>
             <td class="action">
               <button
@@ -88,12 +85,16 @@
 import DatasetUpdateModal from "@/components/dataset/modal/DatasetUpdateModal";
 import DatasetDeleteModal from "@/components/dataset/modal/DatasetDeleteModal";
 import DatasetPreviewModal from "@/components/dataset/modal/DatasetPreviewModal";
-import { mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   components: {
     DatasetUpdateModal,
     DatasetDeleteModal,
     DatasetPreviewModal,
+  },
+  computed: {
+    ...mapState("dataset", ["datasets"]),
+    ...mapGetters("dataset", ["getDatasets"]),
   },
   data() {
     return {
@@ -133,30 +134,32 @@ export default {
       this.showDatasetPreviewModal = false;
     },
   },
-  computed: {
-    ...mapGetters("dataset", ["getDatasets"]),
-  },
 };
 </script>
 
 <style scoped>
 .dataset-list-root {
   height: 90%;
+  display: flex;
+  justify-content: center;
 }
 .table-container {
   display: flex;
   justify-content: center;
-  height: calc(100% - 10px);
-  overflow: auto;
+  height: calc(100% - 30px);
+  width: calc(100% - 20px);
+  margin-top: 10px;
 }
 table {
+  justify-content: center;
   color: #e8e8e8;
   font-weight: 300;
   text-align: center;
   font-size: 16px;
   border-collapse: separate;
   border-spacing: 0;
-  width: 70%;
+  display: block;
+  overflow: auto;
 }
 th {
   position: sticky;
@@ -166,6 +169,7 @@ th {
   font-size: 17px;
   font-weight: 400;
   background-color: #2c2c2c;
+  width: 300px;
 }
 th:first-child {
   border-right: none;
@@ -173,17 +177,18 @@ th:first-child {
 
 td {
   border: 1.5px solid #353535;
-  height: 50px;
   border-top: none;
+  height: 60px;
 }
 td:first-child {
   border-right: none;
 }
 .name {
-  min-width: 200px;
+  min-width: 300px;
 }
 .action {
-  min-width: 210px;
+  padding: 0 20px;
+  min-width: 500px;
 }
 .action button {
   height: 32px;

@@ -41,9 +41,10 @@ export default {
       this.DELETE_DATASET({
         datasetId: this.datasetId,
       }).then(() => {
-        this.FETCH_DATASETS();
+        this.FETCH_DATASETS().then(() => {
+          this.$emit("close");
+        });
       });
-      this.$emit("close");
     },
   },
 };
