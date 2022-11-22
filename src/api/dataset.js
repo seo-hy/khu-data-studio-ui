@@ -112,7 +112,7 @@ const dataset = {
         et
     );
   },
-  updatewWithDatabase({
+  updateWithDatabase({
     datasetId,
     host,
     port,
@@ -122,10 +122,10 @@ const dataset = {
     table,
     dateTimeColumn,
   }) {
-    return axios.post(
+    return axios.put(
       "/dataset-api/datasets/" +
         datasetId +
-        "update/database",
+        "/data/database",
       {
         host,
         port,
@@ -149,8 +149,8 @@ const dataset = {
         type: "application/json",
       })
     );
-    return axios.post(
-      "/dataset-api/datasets/" + datasetId + "/update/csv",
+    return axios.put(
+      "/dataset-api/datasets/" + datasetId + "/data/csv",
       formData
     );
   },

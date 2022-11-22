@@ -181,6 +181,48 @@ const actions = {
       return res.data;
     });
   },
+  UPDATE_DATA_WITH_DATABASE(
+    context,
+    {
+      datasetId,
+      host,
+      port,
+      db,
+      username,
+      password,
+      table,
+      dateTimeColumn,
+    }
+  ) {
+    return dataset
+      .updateWithDatabase({
+        datasetId,
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+        dateTimeColumn,
+      })
+      .then((res) => {
+        return res.data;
+      });
+  },
+  UPDATE_DATA_WITH_CSV(
+    context,
+    { datasetId, dateTimeColumn, csv }
+  ) {
+    return dataset
+      .updateWithCsv({
+        datasetId,
+        dateTimeColumn,
+        csv,
+      })
+      .then((res) => {
+        return res.data;
+      });
+  },
 };
 
 export default {

@@ -234,6 +234,7 @@
 import { mapActions } from "vuex";
 import Spinner from "@/components/common/Spinner";
 export default {
+  props: ["dataset"],
   components: {
     Spinner,
   },
@@ -266,8 +267,8 @@ export default {
   methods: {
     ...mapActions("dataset", [
       "FETCH_DATASETS",
-      "SAVE_DATASET_WITH_DATABASE",
-      "SAVE_DATASET_WITH_CSV",
+      "UPDATE_DATA_WITH_DATABASE",
+      "UPDATE_DATA_WITH_CSV",
       "PREVIEW_WITH_DATABASE",
       "PREVIEW_WITH_CSV",
     ]),
@@ -279,8 +280,8 @@ export default {
       this.saveError = false;
       this.saveMsg = "데이터를 확인하고 있습니다.";
       if (this.selected === 0) {
-        this.SAVE_DATASET_WITH_DATABASE({
-          name: this.name,
+        this.UPDATE_DATA_WITH_DATABASE({
+          datasetId: this.dataset.id,
           host: this.host,
           port: this.port,
           db: this.db,
@@ -299,8 +300,8 @@ export default {
             this.saveMsg = err.response.data.message;
           });
       } else {
-        this.SAVE_DATASET_WITH_CSV({
-          name: this.name,
+        this.UPDATE_DATA_WITH_CSV({
+          datasetId: this.dataset.id,
           dateTimeColumn: this.dateTimeColumn,
           csv: this.csv,
         })
@@ -410,7 +411,7 @@ export default {
 
 .modal-container {
   width: 550px;
-  height: 650px;
+  height: 600px;
   margin: 0px auto;
   color: #e8e8e8;
   background-color: #252525;
@@ -463,7 +464,7 @@ export default {
 }
 .input-container {
   padding-top: 10px;
-  height: 240px;
+  height: 200px;
 }
 
 .input div {

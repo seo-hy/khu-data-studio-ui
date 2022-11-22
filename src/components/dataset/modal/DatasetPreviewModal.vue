@@ -5,7 +5,7 @@
         <div class="modal-header">
           <div class="title">데이터셋 열람</div>
           <div class="description">
-            상위 5행의 데이터를 열람할 수 있습니다.
+            상위 20행의 데이터를 열람할 수 있습니다.
           </div>
         </div>
         <div class="modal-body">
