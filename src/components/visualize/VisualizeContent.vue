@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="visualize-content-root">
     <div class="chart-contianer">
-      <Spinner v-if="isLoading" />
+      <Spinner v-if="isLoading" class="spinner" />
 
       <LineChart
         v-if="!isLoading"
@@ -46,53 +46,46 @@ export default {
     };
   },
   methods: {
-    ...mapActions("dataset", ["FETCH_DATA_RANGE"]),
+    ...mapActions("dataset", ["FETCH_DATA"]),
     ...mapActions("cleaning", ["VISUALIZE"]),
     ...mapGetters("dataset", ["getSt", "getEt"]),
 
     getData() {
       this.isLoading = true;
-      this.FETCH_DATA_RANGE({
+      this.FETCH_DATA({
         datasetId: this.dataset.id,
-        limit: 0,
         st: this.getSt(),
         et: this.getEt(),
       }).then((res) => {
         this.data = res;
         this.VISUALIZE({
           request: res,
-          idxCol: this.dataset.dateTimeColumn,
+          dateTimeColumn: this.dataset.dateTimeColumn,
         }).then((res) => {
           this.chartData.datasets = [];
+          this.labels = res[this.dataset.dateTimeColumn];
+          this.chartData.labels = this.labels;
           for (
             var i = 0;
             i < this.data.column.length;
             i++
           ) {
             var name = this.data.column[i].name;
-            if (name === this.dataset.dateTimeColumn) {
-              // this.labels = res[name].map(
-              //   (x) => new Date(x)
-              // );
-              this.labels = res[name];
 
-              this.chartData.labels = this.labels;
-            } else {
-              this.chartData.datasets.push({
-                label: name,
-                backgroundColor: "rgb(255,255,255, 0)",
-                pointBackgroundColor:
-                  this.colors[i % this.colors.length],
-                fill: false,
-                tension: 0.1,
-                borderColor:
-                  this.colors[i % this.colors.length],
-                borderWidth: 1,
-                hoverRadius: 1.2,
-                pointRadius: 0.7,
-                data: res[name],
-              });
-            }
+            this.chartData.datasets.push({
+              label: name,
+              backgroundColor: "rgb(255,255,255, 0)",
+              pointBackgroundColor:
+                this.colors[i % this.colors.length],
+              fill: false,
+              tension: 0.1,
+              borderColor:
+                this.colors[i % this.colors.length],
+              borderWidth: 1,
+              hoverRadius: 1.2,
+              pointRadius: 0.7,
+              data: res[name],
+            });
           }
           this.isLoading = false;
         });
@@ -110,4 +103,12 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.visualize-content-root {
+  height: 100%;
+  overflow: auto;
+}
+.spinner {
+  margin-top: 40px;
+}
+</style>

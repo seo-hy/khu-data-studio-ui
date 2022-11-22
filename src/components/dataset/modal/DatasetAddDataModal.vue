@@ -164,26 +164,15 @@
                   v-if="Object.keys(this.data).length !== 0"
                 >
                   <thead>
-                    <template
+                    <th>
+                      {{ this.data.dateTimeColumn }}
+                    </th>
+                    <th
                       v-for="(col, i) in data.column"
+                      :key="i"
                     >
-                      <th
-                        :key="i"
-                        v-if="isDateTimeColumn(col.type)"
-                      >
-                        {{ col.name }}
-                      </th>
-                    </template>
-                    <template
-                      v-for="(col, i) in data.column"
-                    >
-                      <th
-                        :key="i"
-                        v-if="!isDateTimeColumn(col.type)"
-                      >
-                        {{ col.name }}
-                      </th>
-                    </template>
+                      {{ col.name }}
+                    </th>
                   </thead>
                   <tbody>
                     <tr
@@ -193,16 +182,12 @@
                       <td class="datetime-td">
                         {{ row.date }}
                       </td>
-                      <template
+                      <td
                         v-for="(col, j) in data.column"
+                        :key="j"
                       >
-                        <td
-                          :key="j"
-                          v-if="!isDateTimeColumn(col.type)"
-                        >
-                          {{ row.value[col.name] }}
-                        </td>
-                      </template>
+                        {{ row.value[col.name] }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -339,9 +324,6 @@ export default {
       this.db = "";
       this.table = "";
       this.dateTimeColumn = "";
-    },
-    isDateTimeColumn(type) {
-      return type === "DATETIME";
     },
 
     preview() {

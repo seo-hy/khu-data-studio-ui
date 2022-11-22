@@ -19,36 +19,27 @@
               v-if="Object.keys(this.data).length !== 0"
             >
               <thead>
-                <template v-for="(col, i) in data.column">
-                  <th
-                    :key="i"
-                    v-if="isDateTimeColumn(col.type)"
-                  >
-                    {{ col.name }}
-                  </th>
-                </template>
-                <template v-for="(col, i) in data.column">
-                  <th
-                    :key="i"
-                    v-if="!isDateTimeColumn(col.type)"
-                  >
-                    {{ col.name }}
-                  </th>
-                </template>
+                <th
+                  v-for="(col, i) in data.column"
+                  :key="i"
+                >
+                  {{ col.name }}
+                </th>
+                <th>
+                  {{ this.data.dateTimeColumn }}
+                </th>
               </thead>
               <tbody>
                 <tr v-for="(row, i) in data.data" :key="i">
                   <td class="datetime-td">
                     {{ row.date }}
                   </td>
-                  <template v-for="(col, j) in data.column">
-                    <td
-                      :key="j"
-                      v-if="!isDateTimeColumn(col.type)"
-                    >
-                      {{ row.value[col.name] }}
-                    </td>
-                  </template>
+                  <td
+                    v-for="(col, j) in data.column"
+                    :key="j"
+                  >
+                    {{ row.value[col.name] }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -91,9 +82,6 @@ export default {
         this.isLoading = false;
         this.data = res;
       });
-    },
-    isDateTimeColumn(type) {
-      return type === "DATETIME";
     },
   },
   created() {

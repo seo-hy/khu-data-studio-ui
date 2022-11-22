@@ -1,7 +1,7 @@
 <template>
-  <div class="main">
+  <div class="root">
     <div class="header">
-      <div class="header-first">
+      <div>
         <div class="title">통계</div>
         <SelectedData
           v-if="showContent"
@@ -84,7 +84,7 @@ export default {
 </script>
 
 <style scoped>
-.main {
+.root {
   width: calc(100% - 220px);
 }
 .header {
@@ -94,7 +94,7 @@ export default {
   justify-content: space-between;
   height: 90px;
 }
-.header-first {
+.header > div:first-child {
   display: flex;
   align-items: center;
 }
@@ -104,7 +104,7 @@ export default {
 }
 .content {
   width: 95%;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 110px);
   background-color: #1e1e1e;
   border-radius: 10px;
   margin: 20px auto;

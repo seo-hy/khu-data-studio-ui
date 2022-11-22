@@ -152,6 +152,7 @@ table {
   font-weight: 300;
   text-align: center;
   font-size: 16px;
+  border-collapse: separate;
   border-spacing: 0;
   display: block;
   overflow: auto;

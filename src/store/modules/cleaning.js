@@ -36,9 +36,9 @@ const actions = {
       return res.data;
     });
   },
-  VISUALIZE(context, { request, idxCol }) {
+  VISUALIZE(context, { request, dateTimeColumn }) {
     return cleaning
-      .visualize(request, idxCol)
+      .visualize(request, dateTimeColumn)
       .then((res) => {
         return res.data;
       });

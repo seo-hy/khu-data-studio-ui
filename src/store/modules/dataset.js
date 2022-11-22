@@ -152,18 +152,10 @@ const actions = {
         return res.data;
       });
   },
-  FETCH_DATA(context, { datasetId, limit }) {
-    dataset
-      .getData(datasetId, limit, "", "")
-      .then((res) => {
-        return res.data;
-      });
-  },
-  FETCH_DATA_RANGE(context, { datasetId, limit }) {
-    dataset
+  FETCH_DATA(context, { datasetId }) {
+    return dataset
       .getData(
         datasetId,
-        limit,
         context.state.st,
         context.state.et
       )
@@ -171,15 +163,12 @@ const actions = {
         return res.data;
       });
   },
-  FETCH_COLUMN(context, { datasetId }) {
-    dataset.getData(datasetId).then((res) => {
-      return res.data;
-    });
-  },
   UPDATE_DATA(context, { datasetId, request }) {
-    dataset.updateData(datasetId, request).then((res) => {
-      return res.data;
-    });
+    return dataset
+      .updateData(datasetId, request)
+      .then((res) => {
+        return res.data;
+      });
   },
   UPDATE_DATA_WITH_DATABASE(
     context,

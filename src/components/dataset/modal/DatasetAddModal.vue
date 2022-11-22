@@ -186,26 +186,15 @@
                   v-if="Object.keys(this.data).length !== 0"
                 >
                   <thead>
-                    <template
+                    <th>
+                      {{ this.data.dateTimeColumn }}
+                    </th>
+                    <th
                       v-for="(col, i) in data.column"
+                      :key="i"
                     >
-                      <th
-                        :key="i"
-                        v-if="isDateTimeColumn(col.type)"
-                      >
-                        {{ col.name }}
-                      </th>
-                    </template>
-                    <template
-                      v-for="(col, i) in data.column"
-                    >
-                      <th
-                        :key="i"
-                        v-if="!isDateTimeColumn(col.type)"
-                      >
-                        {{ col.name }}
-                      </th>
-                    </template>
+                      {{ col.name }}
+                    </th>
                   </thead>
                   <tbody>
                     <tr
@@ -215,16 +204,12 @@
                       <td class="datetime-td">
                         {{ row.date }}
                       </td>
-                      <template
+                      <td
                         v-for="(col, j) in data.column"
+                        :key="j"
                       >
-                        <td
-                          :key="j"
-                          v-if="!isDateTimeColumn(col.type)"
-                        >
-                          {{ row.value[col.name] }}
-                        </td>
-                      </template>
+                        {{ row.value[col.name] }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -320,6 +305,10 @@ export default {
           .catch((err) => {
             this.saveError = true;
             this.saveMsg = err.response.data.message;
+            if (this.saveMsg.length > 50) {
+              this.saveMsg =
+                this.saveMsg.slice(0, 50) + "...";
+            }
           });
       } else {
         this.SAVE_DATASET_WITH_CSV({
@@ -335,6 +324,10 @@ export default {
           .catch((err) => {
             this.saveError = true;
             this.saveMsg = err.response.data.message;
+            if (this.saveMsg.length > 50) {
+              this.saveMsg =
+                this.saveMsg.slice(0, 50) + "...";
+            }
           });
       }
     },
@@ -361,9 +354,6 @@ export default {
       this.db = "";
       this.table = "";
       this.dateTimeColumn = "";
-    },
-    isDateTimeColumn(type) {
-      return type === "DATETIME";
     },
 
     preview() {

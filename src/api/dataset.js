@@ -100,13 +100,11 @@ const dataset = {
       "/dataset-api/datasets/" + datasetId + "/data/preview"
     );
   },
-  getData(datasetId, limit, st, et) {
+  getData(datasetId, st, et) {
     return axios.get(
       "/dataset-api/datasets/" +
         datasetId +
-        "/data?limit=" +
-        limit +
-        "&st=" +
+        "/data?st=" +
         st +
         "&et=" +
         et
@@ -154,11 +152,7 @@ const dataset = {
       formData
     );
   },
-  getColumn(datasetId) {
-    return axios.get(
-      "/dataset-api/datasets/" + datasetId + "/column"
-    );
-  },
+
   updateData(datasetId, request) {
     return axios.put(
       "/dataset-api/datasets/" + datasetId + "/data",

@@ -28,9 +28,10 @@ const cleaning = {
   mean(request) {
     return axios.post("/cleaning-api/mean", request);
   },
-  visualize(request, idxCol) {
+  visualize(request, dateTimeColumn) {
     return axios.post(
-      "/cleaning-api/visualize?idx_col=" + idxCol,
+      "/cleaning-api/visualize?date_time_column=" +
+        dateTimeColumn,
       request
     );
   },
