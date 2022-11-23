@@ -1,8 +1,10 @@
 <template>
-  <div class="main">
-    <div class="title">데이터셋 관리</div>
+  <div class="root">
+    <div class="header">
+      <div class="title">데이터셋 관리</div>
+    </div>
     <div class="content">
-      <div class="content-header">
+      <div class="btn-container">
         <button class="add-btn" @click="openDataAddModal">
           데이터셋 등록
         </button>
@@ -19,7 +21,7 @@
 
 <script>
 import DatasetList from "@/components/dataset/DatasetList";
-import DatasetAddModal from "@/components/dataset/DatasetAddModal";
+import DatasetAddModal from "@/components/dataset/modal/DatasetAddModal";
 export default {
   components: {
     DatasetList,
@@ -42,27 +44,32 @@ export default {
 </script>
 
 <style scoped>
-.main {
+.root {
   width: calc(100% - 220px);
+}
+
+.header {
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  height: 90px;
 }
 .title {
   color: #bcbcbc;
   font-size: 25px;
-  height: 50px;
-  line-height: 70px;
-  padding-left: 20px;
 }
 .content {
   width: 95%;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 110px);
   background-color: #1e1e1e;
   border-radius: 10px;
   margin: 20px auto;
+  margin-top: 0px;
   box-sizing: border-box;
   padding: 15px;
 }
 
-.content-header {
+.btn-container {
   margin: 10px 20px;
   width: 100%;
   display: flex;

@@ -1,17 +1,21 @@
 <template>
-  <div class="main">
+  <div class="root">
     <div class="header">
-      <div class="title">노이즈 제거</div>
-      <SelectedData
-        v-if="showData"
-        :datasetId="datasetId"
-        @changeDataset="changeDataset"
-      />
+      <div>
+        <div class="title">노이즈 제거</div>
+        <SelectedData
+          v-if="showContent"
+          :datasetId="datasetId"
+          @changeDataset="changeDataset"
+        />
+      </div>
+      <SelectPeriod @selectPeriod="selectPeriod" />
     </div>
     <div class="content">
       <NoiseControl
-        v-if="showData"
-        :datasetId="datasetId"
+        v-if="showContent"
+        :dataset="dataset"
+        :changeDate="changeDate"
       />
     </div>
     <DatasetSelectModal
@@ -32,52 +36,68 @@
 import SelectedData from "@/components/common/SelectedData";
 import DatasetSelectModal from "@/components/common/DatasetSelectModal";
 import NoiseControl from "@/components/preprocessing/NoiseControl";
-
+import SelectPeriod from "@/components/common/SelectPeriod";
+import { mapActions } from "vuex";
 export default {
   components: {
     DatasetSelectModal,
     NoiseControl,
     SelectedData,
+    SelectPeriod,
   },
   data() {
     return {
       showDatasetSelectModal: true,
       datasetId: 0,
-      showData: false,
+      dataset: {},
+      showContent: false,
+      changeDate: "",
     };
   },
   methods: {
+    ...mapActions("dataset", ["FETCH_DATASET"]),
     closeDatasetSelectModal(datasetId) {
       this.showDatasetSelectModal = false;
       this.datasetId = datasetId;
-      this.showData = true;
+      this.FETCH_DATASET(this.datasetId).then((res) => {
+        this.dataset = res;
+        this.showContent = true;
+      });
     },
     changeDataset() {
       this.showDatasetSelectModal = true;
-      this.showData = false;
+      this.showContent = false;
+    },
+    selectPeriod(timestamp) {
+      this.changeDate = timestamp;
     },
   },
 };
 </script>
 
 <style scoped>
-.main {
+.root {
   width: calc(100% - 220px);
 }
 .header {
-  padding-left: 20px;
+  padding: 0 30px;
   display: flex;
   align-items: center;
-  height: 70px;
+  justify-content: space-between;
+
+  height: 90px;
+}
+.header > div:first-child {
+  display: flex;
+  align-items: center;
 }
 .title {
   color: #bcbcbc;
   font-size: 25px;
-  line-height: 70px;
 }
 .content {
   width: 95%;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 110px);
   background-color: #1e1e1e;
   border-radius: 10px;
   margin: 20px auto;

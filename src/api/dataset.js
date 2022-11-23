@@ -1,26 +1,83 @@
 import axios from "axios";
 
 const dataset = {
-  save({
+  saveWithDatabase({
     name,
     host,
     port,
     db,
-    userName,
+    username,
     password,
-    tableName,
+    table,
     dateTimeColumn,
   }) {
-    return axios.post("/dataset-api/datasets", {
+    return axios.post("/dataset-api/datasets/database", {
       name,
       host,
       port,
       db,
-      userName,
+      username,
       password,
-      tableName,
+      table,
       dateTimeColumn,
     });
+  },
+  saveWithCsv({ name, dateTimeColumn, csv }) {
+    let formData = new FormData();
+    formData.append("csv", csv);
+    let request = {
+      name,
+      dateTimeColumn,
+    };
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], {
+        type: "application/json",
+      })
+    );
+    return axios.post(
+      "/dataset-api/datasets/csv",
+      formData
+    );
+  },
+  previewWithDatabase({
+    host,
+    port,
+    db,
+    username,
+    password,
+    table,
+    dateTimeColumn,
+  }) {
+    return axios.post(
+      "/dataset-api/datasets/preview/database",
+      {
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+        dateTimeColumn,
+      }
+    );
+  },
+  previewWithCsv({ dateTimeColumn, csv }) {
+    let formData = new FormData();
+    formData.append("csv", csv);
+    let request = {
+      dateTimeColumn,
+    };
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], {
+        type: "application/json",
+      })
+    );
+    return axios.post(
+      "/dataset-api/datasets/preview/csv",
+      formData
+    );
   },
   get(datasetId) {
     return axios.get("/dataset-api/datasets/" + datasetId);
@@ -28,26 +85,9 @@ const dataset = {
   getList() {
     return axios.get("/dataset-api/datasets");
   },
-  update({
-    datasetId,
-    name,
-    host,
-    port,
-    db,
-    userName,
-    password,
-    tableName,
-    dateTimeColumn,
-  }) {
+  update({ datasetId, name }) {
     return axios.put("/dataset-api/datasets/" + datasetId, {
       name,
-      host,
-      port,
-      db,
-      userName,
-      password,
-      tableName,
-      dateTimeColumn,
     });
   },
   delete(datasetId) {
@@ -55,42 +95,64 @@ const dataset = {
       "/dataset-api/datasets/" + datasetId
     );
   },
-  connect({
-    host,
-    port,
-    userName,
-    password,
-    db,
-    tableName,
-    dateTimeColumn,
-  }) {
-    return axios.post("/dataset-api/datasets/connect", {
-      host,
-      port,
-      db,
-      userName,
-      password,
-      tableName,
-      dateTimeColumn,
-    });
+  previewData({ datasetId }) {
+    return axios.get(
+      "/dataset-api/datasets/" + datasetId + "/data/preview"
+    );
   },
-  getData(datasetId, limit, st, et) {
+  getData(datasetId, st, et) {
     return axios.get(
       "/dataset-api/datasets/" +
         datasetId +
-        "/data?limit=" +
-        limit +
-        "&st=" +
+        "/data?st=" +
         st +
         "&et=" +
         et
     );
   },
-  getColumn(datasetId) {
-    return axios.get(
-      "/dataset-api/datasets/" + datasetId + "/column"
+  updateWithDatabase({
+    datasetId,
+    host,
+    port,
+    db,
+    username,
+    password,
+    table,
+    dateTimeColumn,
+  }) {
+    return axios.put(
+      "/dataset-api/datasets/" +
+        datasetId +
+        "/data/database",
+      {
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+        dateTimeColumn,
+      }
     );
   },
+  updateWithCsv({ datasetId, dateTimeColumn, csv }) {
+    let formData = new FormData();
+    formData.append("csv", csv);
+    let request = {
+      dateTimeColumn,
+    };
+    formData.append(
+      "request",
+      new Blob([JSON.stringify(request)], {
+        type: "application/json",
+      })
+    );
+    return axios.put(
+      "/dataset-api/datasets/" + datasetId + "/data/csv",
+      formData
+    );
+  },
+
   updateData(datasetId, request) {
     return axios.put(
       "/dataset-api/datasets/" + datasetId + "/data",

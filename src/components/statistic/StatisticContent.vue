@@ -1,12 +1,15 @@
 <template>
-  <div>
+  <div class="statictic-content-root">
     <div class="stat-container">
       <div class="stat-container-header"></div>
       <div v-if="isLoadingStat" class="loading">
-        <Spinner />
+        <Spinner class="spinner" />
       </div>
 
-      <div class="table-container" v-if="!isLoadingStat">
+      <div
+        class="stat-table-container"
+        v-if="!isLoadingStat"
+      >
         <table>
           <thead>
             <th></th>
@@ -61,10 +64,13 @@
         </div>
       </div>
       <div v-if="isLoadingPearson" class="loading">
-        <Spinner />
+        <Spinner class="spinner" />
       </div>
 
-      <div class="table-container" v-if="!isLoadingPearson">
+      <div
+        class="pearson-table-container"
+        v-if="!isLoadingPearson"
+      >
         <table>
           <thead>
             <th></th>
@@ -120,62 +126,47 @@ export default {
     };
   },
   methods: {
-    ...mapActions("dataset", ["FETCH_DATA_RANGE"]),
+    ...mapActions("dataset", ["FETCH_DATA"]),
     ...mapActions("cleaning", [
       "PEARSON_CORRELATION",
       "STD",
       "MEAN",
     ]),
     ...mapGetters("dataset", ["getSt", "getEt"]),
-    get_pearson_correlation() {
-      this.isLoadingPearson = true;
-      this.FETCH_DATA_RANGE({
+    getData() {
+      return this.FETCH_DATA({
         datasetId: this.dataset.id,
-        limit: 0,
         st: this.getSt(),
         et: this.getEt(),
       }).then((res) => {
         this.data = res;
-        this.PEARSON_CORRELATION({
-          request: res,
-        }).then((res) => {
-          this.pearson = res;
-          this.isLoadingPearson = false;
-        });
       });
     },
-    get_std() {
+    getPearsonCorrelation() {
+      this.isLoadingPearson = true;
+      this.PEARSON_CORRELATION({
+        request: this.data,
+      }).then((res) => {
+        this.pearson = res;
+        this.isLoadingPearson = false;
+      });
+    },
+    getStd() {
       this.isLoadingStd = true;
-
-      this.FETCH_DATA_RANGE({
-        datasetId: this.dataset.id,
-        limit: 0,
-        st: this.getSt(),
-        et: this.getEt(),
+      this.STD({
+        request: this.data,
       }).then((res) => {
-        this.STD({
-          request: res,
-        }).then((res) => {
-          this.stdList = res;
-          this.isLoadingStd = false;
-        });
+        this.stdList = res;
+        this.isLoadingStd = false;
       });
     },
-    get_mean() {
+    getMean() {
       this.isLoadingMean = true;
-      this.FETCH_DATA_RANGE({
-        datasetId: this.dataset.id,
-        limit: 0,
-        st: this.getSt(),
-        et: this.getEt(),
+      this.MEAN({
+        request: this.data,
       }).then((res) => {
-        this.MEAN({
-          request: res,
-          idxCol: this.dataset.dateTimeColumn,
-        }).then((res) => {
-          this.meanList = res;
-          this.isLoadingMean = false;
-        });
+        this.meanList = res;
+        this.isLoadingMean = false;
       });
     },
     highlight(val) {
@@ -193,15 +184,19 @@ export default {
     },
   },
   created() {
-    this.get_mean();
-    this.get_std();
-    this.get_pearson_correlation();
+    this.getData().then(() => {
+      this.getMean();
+      this.getStd();
+      this.getPearsonCorrelation();
+    });
   },
   watch: {
     changeDate: function () {
-      this.get_mean();
-      this.get_std();
-      this.get_pearson_correlation();
+      this.getData().then(() => {
+        this.getMean();
+        this.getStd();
+        this.getPearsonCorrelation();
+      });
     },
   },
   computed: {
@@ -213,6 +208,10 @@ export default {
 </script>
 
 <style scoped>
+.statictic-content-root {
+  height: 100%;
+  overflow: auto;
+}
 .pearson-container-header {
   display: flex;
   justify-content: space-between;
@@ -243,6 +242,7 @@ export default {
   cursor: pointer;
   transition: all 0.5s;
   background-color: #3f8ae2;
+  margin-right: 30px;
 }
 .pearson-threshold-btn:hover {
   background-color: #2f6cb1;
@@ -253,14 +253,22 @@ export default {
   font-size: 22px;
   margin: 5px;
 }
+.stat-table-container,
+.pearson-table-container {
+  padding-top: 10px;
+  overflow: auto;
+  display: flex;
+}
+
 table {
-  width: 100%;
   color: #e8e8e8;
   font-weight: 300;
   text-align: center;
   font-size: 16px;
   border: 1.5px solid #545454;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+  display: block;
 }
 th {
   border: 1.5px solid #545454;
@@ -268,17 +276,17 @@ th {
   font-size: 17px;
   font-weight: 400;
   background-color: #2c2c2c;
+  padding: 0px 30px;
 }
 td {
   border: 0.5px solid #353535;
   height: 30px;
-  width: 12%;
+  padding: 0px 30px;
 }
-.table-container {
-  padding-top: 10px;
-  overflow: auto;
-  width: 100%;
+.stat-table-container td:first-child {
+  min-width: 100px;
 }
+
 .th-style {
   border: 1.5px solid #545454;
   background-color: #2c2c2c;
@@ -291,6 +299,9 @@ td {
   font-weight: 400;
 }
 .stat-container {
-  margin-bottom: 80px;
+  margin-bottom: 30px;
+}
+.spinner {
+  margin-top: 40px;
 }
 </style>

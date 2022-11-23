@@ -31,30 +31,73 @@ const mutations = {
 };
 
 const actions = {
-  SAVE_DATASET(
+  SAVE_DATASET_WITH_DATABASE(
     context,
     {
       name,
       host,
       port,
       db,
-      userName,
+      username,
       password,
-      tableName,
+      table,
       dateTimeColumn,
     }
   ) {
     return dataset
-      .save({
+      .saveWithDatabase({
         name,
         host,
         port,
         db,
-        userName,
+        username,
         password,
-        tableName,
+        table,
         dateTimeColumn,
       })
+      .then((res) => {
+        return res.data;
+      });
+  },
+  SAVE_DATASET_WITH_CSV(
+    context,
+    { name, dateTimeColumn, csv }
+  ) {
+    return dataset
+      .saveWithCsv({ name, dateTimeColumn, csv })
+      .then((res) => {
+        return res.data;
+      });
+  },
+  PREVIEW_WITH_DATABASE(
+    context,
+    {
+      host,
+      port,
+      db,
+      username,
+      password,
+      table,
+      dateTimeColumn,
+    }
+  ) {
+    return dataset
+      .previewWithDatabase({
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+        dateTimeColumn,
+      })
+      .then((res) => {
+        return res.data;
+      });
+  },
+  PREVIEW_WITH_CSV(context, { dateTimeColumn, csv }) {
+    return dataset
+      .previewWithCsv({ dateTimeColumn, csv })
       .then((res) => {
         return res.data;
       });
@@ -100,49 +143,19 @@ const actions = {
       });
   },
   DELETE_DATASET(context, { datasetId }) {
-    return dataset.delete(datasetId).then((res) => {
-      return res;
-    });
+    return dataset.delete(datasetId);
   },
-  CONNECT(
-    context,
-    {
-      host,
-      port,
-      db,
-      userName,
-      password,
-      tableName,
-      dateTimeColumn,
-    }
-  ) {
+  PREVIEW_DATA(context, { datasetId }) {
     return dataset
-      .connect({
-        host,
-        port,
-        db,
-        userName,
-        password,
-        tableName,
-        dateTimeColumn,
-      })
-      .then((res) => {
-        return res.data;
-      })
-      .catch(() => {});
-  },
-  FETCH_DATA(context, { datasetId, limit }) {
-    return dataset
-      .getData(datasetId, limit, "", "")
+      .previewData({ datasetId })
       .then((res) => {
         return res.data;
       });
   },
-  FETCH_DATA_RANGE(context, { datasetId, limit }) {
+  FETCH_DATA(context, { datasetId }) {
     return dataset
       .getData(
         datasetId,
-        limit,
         context.state.st,
         context.state.et
       )
@@ -150,14 +163,58 @@ const actions = {
         return res.data;
       });
   },
-  FETCH_COLUMN(context, { datasetId }) {
-    return dataset.getData(datasetId).then((res) => {
-      return res.data;
-    });
+  FETCH_ALL_DATA(context, { datasetId }) {
+    return dataset
+      .getData(datasetId, "", "")
+      .then((res) => {
+        return res.data;
+      });
   },
   UPDATE_DATA(context, { datasetId, request }) {
     return dataset
       .updateData(datasetId, request)
+      .then((res) => {
+        return res.data;
+      });
+  },
+  UPDATE_DATA_WITH_DATABASE(
+    context,
+    {
+      datasetId,
+      host,
+      port,
+      db,
+      username,
+      password,
+      table,
+      dateTimeColumn,
+    }
+  ) {
+    return dataset
+      .updateWithDatabase({
+        datasetId,
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+        dateTimeColumn,
+      })
+      .then((res) => {
+        return res.data;
+      });
+  },
+  UPDATE_DATA_WITH_CSV(
+    context,
+    { datasetId, dateTimeColumn, csv }
+  ) {
+    return dataset
+      .updateWithCsv({
+        datasetId,
+        dateTimeColumn,
+        csv,
+      })
       .then((res) => {
         return res.data;
       });

@@ -3,45 +3,30 @@
     <div class="data-description">
       결측치가 포함된 행을 나열합니다.
     </div>
-
     <div class="data-container">
-      <div v-if="isLoading" class="loading">
-        <Spinner />
-      </div>
+      <Spinner v-if="isLoading" class="spinner" />
       <div class="table-container" v-if="!isLoading">
         <table>
           <thead>
-            <template v-for="(col, i) in data.column">
-              <th :key="i" v-if="col.dateTimeColumn">
-                {{ col.name }}
-              </th>
-            </template>
-            <template v-for="(col, i) in data.column">
-              <th :key="i" v-if="!col.dateTimeColumn">
-                {{ col.name }}
-              </th>
-            </template>
+            <th>
+              {{ data.dateTimeColumn }}
+            </th>
+            <th v-for="(col, i) in data.column" :key="i">
+              {{ col.name }}
+            </th>
           </thead>
           <tbody>
             <tr v-for="(row, i) in data.data" :key="i">
-              <template v-for="(col, j) in data.column">
-                <td
-                  :key="j"
-                  v-if="col.dateTimeColumn"
-                  class="datetime-td"
-                >
-                  {{ row[col.name] }}
-                </td>
-              </template>
-              <template v-for="(col, j) in data.column">
-                <td
-                  :key="j"
-                  v-if="!col.dateTimeColumn"
-                  :class="{ 'na-td': isNaIdx(i, j) }"
-                >
-                  {{ row[col.name] }}
-                </td>
-              </template>
+              <td class="datetime-td">
+                {{ row.date }}
+              </td>
+              <td
+                v-for="(col, j) in data.column"
+                :key="j"
+                :class="{ 'na-td': isNaIdx(i, j) }"
+              >
+                {{ row.value[col.name] }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -66,9 +51,7 @@
           <button class="restore-btn" @click="findNa">
             복원
           </button>
-          <button class="run-btn" @click="runNa">
-            수행
-          </button>
+          <button class="run-btn" @click="run">수행</button>
           <button class="save-btn" @click="save">
             저장
           </button>
@@ -90,6 +73,7 @@ export default {
     return {
       data: [],
       saveData: [],
+      deleteDate: [],
       originData: [],
       originDataNa: [],
       isLoading: true,
@@ -113,13 +97,19 @@ export default {
     };
   },
   methods: {
-    ...mapActions("dataset", ["FETCH_DATA", "UPDATE_DATA"]),
-    ...mapActions("cleaning", ["FIND_NA", "RUN_NA"]),
+    ...mapActions("dataset", [
+      "FETCH_ALL_DATA",
+      "UPDATE_DATA",
+    ]),
+    ...mapActions("cleaning", [
+      "FIND_NA",
+      "RUN_NA",
+      "DELETE_MISSING_VALUE",
+    ]),
     findNa() {
       this.isLoading = true;
-      this.FETCH_DATA({
+      this.FETCH_ALL_DATA({
         datasetId: this.datasetId,
-        limit: 0,
       }).then((res) => {
         this.originData = res;
         this.FIND_NA({
@@ -146,7 +136,7 @@ export default {
           j++
         ) {
           if (
-            this.originDataNa.data[i][
+            this.originDataNa.data[i].value[
               this.originDataNa.column[j].name
             ] === null
           ) {
@@ -156,7 +146,7 @@ export default {
       }
     },
     isNaIdx(iIdx, jIdx) {
-      var isContain = this.naIdxList.filter(
+      let isContain = this.naIdxList.filter(
         (e) => e.i === iIdx && e.j === jIdx
       );
       return isContain.length > 0;
@@ -166,17 +156,29 @@ export default {
       this.data = this.originDataNa;
       this.isLoading = false;
     },
-    runNa() {
+    run() {
+      this.deleteDate = [];
       this.isLoading = true;
-      this.RUN_NA({
-        method: this.selectedMethod,
-        idxCol: this.idxCol,
-        request: this.originData,
-      }).then((res) => {
-        this.data = res.run;
-        this.saveData = res.save;
-        this.isLoading = false;
-      });
+      if (this.selectedMethod === "2") {
+        this.DELETE_MISSING_VALUE({
+          request: this.originData,
+        }).then((res) => {
+          console.log(res);
+
+          this.data = res.run;
+          this.deleteDate = res.deleteDate;
+          this.isLoading = false;
+        });
+      }
+      // this.RUN_NA({
+      //   method: this.selectedMethod,
+      //   idxCol: this.idxCol,
+      //   request: this.originData,
+      // }).then((res) => {
+      //   this.data = res.run;
+      //   this.saveData = res.save;
+      //   this.isLoading = false;
+      // });
     },
     save() {
       this.isLoading = true;
@@ -198,24 +200,6 @@ export default {
 .missing-value-control {
   height: 100%;
 }
-table {
-  color: #e8e8e8;
-  font-weight: 300;
-  text-align: center;
-  font-size: 16px;
-  border: 1.5px solid #545454;
-}
-th {
-  height: 35px;
-  font-size: 17px;
-  font-weight: 400;
-  background-color: #2c2c2c;
-}
-td {
-  border: 0.5px solid #353535;
-  height: 30px;
-  width: 12%;
-}
 
 .data-description {
   color: #e8e8e8;
@@ -228,8 +212,32 @@ td {
   height: calc(100% - 35px);
 }
 .table-container {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: calc(100% - 350px);
+}
+table {
+  color: #e8e8e8;
+  font-weight: 300;
+  text-align: center;
+  font-size: 16px;
+  border: 1.5px solid #545454;
+  display: block;
   overflow: auto;
-  width: 65%;
+}
+th {
+  position: sticky;
+  top: 0px;
+  height: 35px;
+  font-size: 17px;
+  font-weight: 400;
+  background-color: #2c2c2c;
+  padding: 0 5px;
+}
+td {
+  border: 0.5px solid #353535;
+  height: 30px;
 }
 
 .action-container {
@@ -239,12 +247,12 @@ td {
   border: 0.8px solid rgba(109, 109, 109, 0.306);
   background-color: rgba(255, 255, 255, 0.014);
   border-radius: 15px;
+  min-width: 250px;
   width: 250px;
   margin-left: 10px;
 }
-.loading {
-  margin-top: 30px;
-  width: 65%;
+.spinner {
+  margin-top: 60px;
 }
 .method-label {
   color: #e8e8e8;
@@ -300,5 +308,6 @@ td {
   border: 1.5px solid #545454;
   background-color: #2c2c2c;
   border: none;
+  min-width: 156px;
 }
 </style>

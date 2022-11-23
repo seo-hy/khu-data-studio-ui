@@ -8,35 +8,29 @@
         <div class="modal-body">
           <div>
             <slot name="description"></slot>
-            <table>
-              <thead>
-                <th>Name</th>
-                <th>Host</th>
-                <th>Port</th>
-                <th>Database</th>
-                <th>Table</th>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="dataset in getDatasets"
-                  :key="dataset.id"
-                  @click="select(dataset.id)"
-                  :class="[
-                    selected === dataset.id
-                      ? 'selected'
-                      : 'unselected',
-                  ]"
-                >
-                  <td class="name">
-                    {{ dataset.name }}
-                  </td>
-                  <td>{{ dataset.host }}</td>
-                  <td>{{ dataset.port }}</td>
-                  <td>{{ dataset.db }}</td>
-                  <td>{{ dataset.tableName }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <th>Name</th>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="dataset in getDatasets"
+                    :key="dataset.id"
+                    @click="select(dataset.id)"
+                    :class="[
+                      selected === dataset.id
+                        ? 'selected'
+                        : 'unselected',
+                    ]"
+                  >
+                    <td class="name">
+                      {{ dataset.name }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -104,7 +98,8 @@ export default {
 }
 
 .modal-container {
-  width: 800px;
+  width: 500px;
+  height: 400px;
   margin: 0px auto;
   color: #e8e8e8;
   background-color: #252525;
@@ -165,22 +160,32 @@ export default {
   margin-left: 10px;
   font-weight: 300;
 }
+.table-container {
+  display: flex;
+  justify-content: center;
+  height: 230px;
+}
 table {
-  width: 100%;
   margin-top: 10px;
   color: #e8e8e8;
   font-weight: 300;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   text-align: center;
   font-size: 15px;
   border: 1.5px solid #545454;
+  display: block;
+  overflow: auto;
 }
 th {
+  position: sticky;
+  top: 0px;
   height: 30px;
   border: 1.5px solid #545454;
   font-size: 15px;
   font-weight: 400;
   background-color: #2c2c2c;
+  width: 400px;
 }
 tr {
   cursor: pointer;
@@ -191,11 +196,8 @@ tr {
 td {
   border: 1px solid #353535;
   height: 30px;
-  width: 14%;
 }
-.name {
-  width: 250px;
-}
+
 .selected {
   background-color: #3f8ae2;
 }

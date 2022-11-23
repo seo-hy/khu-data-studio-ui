@@ -19,6 +19,13 @@ const actions = {
         return res.data;
       });
   },
+  DELETE_MISSING_VALUE(context, { request }) {
+    return cleaning
+      .deleteMissingValue(request)
+      .then((res) => {
+        return res.data;
+      });
+  },
   PEARSON_CORRELATION(context, { request }) {
     return cleaning
       .pearsonCorrelation(request)
@@ -36,12 +43,17 @@ const actions = {
       return res.data;
     });
   },
-  VISUALIZE(context, { request, idxCol }) {
+  VISUALIZE(context, { request, dateTimeColumn }) {
     return cleaning
-      .visualize(request, idxCol)
+      .visualize(request, dateTimeColumn)
       .then((res) => {
         return res.data;
       });
+  },
+  DENOISE(context, { request, com }) {
+    return cleaning.denoise(request, com).then((res) => {
+      return res.data;
+    });
   },
 };
 

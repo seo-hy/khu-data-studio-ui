@@ -1,7 +1,7 @@
 <template>
-  <div class="main">
+  <div class="root">
     <div class="header">
-      <div class="header-first">
+      <div>
         <div class="title">통계</div>
         <SelectedData
           v-if="showContent"
@@ -71,42 +71,32 @@ export default {
       this.showContent = false;
       this.showDatasetSelectModal = true;
     },
-    formatDateToString(input) {
-      const year = input.getFullYear();
-      const month = input.getMonth() + 1;
-      const date = input.getDate();
-      return `${year}-${
-        month >= 10 ? month : "0" + month
-      }-${date >= 10 ? date : "0" + date}`;
-    },
   },
 };
 </script>
 
 <style scoped>
-.main {
+.root {
   width: calc(100% - 220px);
 }
 .header {
-  padding-left: 20px;
-  padding-right: 50px;
+  padding: 0 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 70px;
+  height: 90px;
 }
-.header-first {
+.header > div:first-child {
   display: flex;
   align-items: center;
 }
 .title {
   color: #bcbcbc;
   font-size: 25px;
-  line-height: 70px;
 }
 .content {
   width: 95%;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 110px);
   background-color: #1e1e1e;
   border-radius: 10px;
   margin: 20px auto;
