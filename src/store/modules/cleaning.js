@@ -19,6 +19,13 @@ const actions = {
         return res.data;
       });
   },
+  DELETE_MISSING_VALUE(context, { request }) {
+    return cleaning
+      .deleteMissingValue(request)
+      .then((res) => {
+        return res.data;
+      });
+  },
   PEARSON_CORRELATION(context, { request }) {
     return cleaning
       .pearsonCorrelation(request)
@@ -42,6 +49,11 @@ const actions = {
       .then((res) => {
         return res.data;
       });
+  },
+  DENOISE(context, { request, com }) {
+    return cleaning.denoise(request, com).then((res) => {
+      return res.data;
+    });
   },
 };
 

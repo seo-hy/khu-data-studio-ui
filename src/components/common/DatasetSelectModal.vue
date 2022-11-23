@@ -185,6 +185,7 @@ th {
   font-size: 15px;
   font-weight: 400;
   background-color: #2c2c2c;
+  width: 400px;
 }
 tr {
   cursor: pointer;
@@ -195,7 +196,6 @@ tr {
 td {
   border: 1px solid #353535;
   height: 30px;
-  width: 400px;
 }
 
 .selected {

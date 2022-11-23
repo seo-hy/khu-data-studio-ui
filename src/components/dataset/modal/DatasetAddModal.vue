@@ -263,14 +263,31 @@ export default {
         { value: 1, text: "csv 파일" },
       ],
       dataSourceList: [{ value: 0, text: "MySQL" }],
-      saveMsg: "",
+      saveMsgOrigin: "",
       saveError: false,
-      previewMsg: "",
+      previewMsgOrigin: "",
       previewError: false,
       data: {},
     };
   },
-  computed: {},
+  computed: {
+    saveMsg() {
+      if (this.saveMsgOrigin === null) {
+        return "실패하였습니다.";
+      } else if (this.saveMsgOrigin.length > 50) {
+        return this.saveMsgOrigin.slice(0, 50) + "...";
+      }
+      return this.saveMsgOrigin;
+    },
+    previewMsg() {
+      if (this.previewMsgOrigin === null) {
+        return "실패하였습니다.";
+      } else if (this.previewMsgOrigin.length > 50) {
+        return this.previewMsgOrigin.slice(0, 50) + "...";
+      }
+      return this.previewMsgOrigin;
+    },
+  },
   methods: {
     ...mapActions("dataset", [
       "FETCH_DATASETS",
@@ -285,7 +302,7 @@ export default {
     save() {
       this.validate = true;
       this.saveError = false;
-      this.saveMsg = "데이터를 확인하고 있습니다.";
+      this.saveMsgOrigin = "데이터를 확인하고 있습니다.";
       if (this.selected === 0) {
         this.SAVE_DATASET_WITH_DATABASE({
           name: this.name,
@@ -304,11 +321,7 @@ export default {
           })
           .catch((err) => {
             this.saveError = true;
-            this.saveMsg = err.response.data.message;
-            if (this.saveMsg.length > 50) {
-              this.saveMsg =
-                this.saveMsg.slice(0, 50) + "...";
-            }
+            this.saveMsgOrigin = err.response.data.message;
           });
       } else {
         this.SAVE_DATASET_WITH_CSV({
@@ -323,11 +336,7 @@ export default {
           })
           .catch((err) => {
             this.saveError = true;
-            this.saveMsg = err.response.data.message;
-            if (this.saveMsg.length > 50) {
-              this.saveMsg =
-                this.saveMsg.slice(0, 50) + "...";
-            }
+            this.saveMsgOrigin = err.response.data.message;
           });
       }
     },
@@ -339,9 +348,9 @@ export default {
       this.selected = value;
       this.data = {};
       this.clearInput();
-      this.saveMsg = "";
+      this.saveMsgOrigin = "";
       this.saveError = false;
-      this.previewMsg = "";
+      this.previewMsgOrigin = "";
       this.previewError = false;
       this.csv = "";
     },
@@ -359,7 +368,7 @@ export default {
     preview() {
       this.data = {};
       this.previewError = false;
-      this.previewMsg = "데이터를 불러오고 있습니다.";
+      this.previewMsgOrigin = "데이터를 불러오고 있습니다.";
       this.previewErrMsg = "";
       this.isLoading = true;
       if (this.selected === 0) {
@@ -374,12 +383,13 @@ export default {
         })
           .then((res) => {
             this.data = res;
-            this.previewMsg = "";
+            this.previewMsgOrigin = "";
             this.isLoading = false;
           })
           .catch((err) => {
             this.previewError = true;
-            this.previewMsg = err.response.data.message;
+            this.previewMsgOrigin =
+              err.response.data.message;
             this.isLoading = false;
           });
       } else {
@@ -389,12 +399,13 @@ export default {
         })
           .then((res) => {
             this.data = res;
-            this.previewMsg = "";
+            this.previewMsgOrigin = "";
             this.isLoading = false;
           })
           .catch((err) => {
             this.previewError = true;
-            this.previewMsg = err.response.data.message;
+            this.previewMsgOrigin =
+              err.response.data.message;
             this.isLoading = false;
           });
       }

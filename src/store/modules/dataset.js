@@ -163,6 +163,13 @@ const actions = {
         return res.data;
       });
   },
+  FETCH_ALL_DATA(context, { datasetId }) {
+    return dataset
+      .getData(datasetId, "", "")
+      .then((res) => {
+        return res.data;
+      });
+  },
   UPDATE_DATA(context, { datasetId, request }) {
     return dataset
       .updateData(datasetId, request)

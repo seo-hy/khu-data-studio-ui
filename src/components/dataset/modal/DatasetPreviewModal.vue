@@ -79,6 +79,7 @@ export default {
       this.PREVIEW_DATA({
         datasetId: this.dataset.id,
       }).then((res) => {
+        console.log(res);
         this.isLoading = false;
         this.data = res;
       });

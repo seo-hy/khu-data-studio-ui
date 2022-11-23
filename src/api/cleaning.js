@@ -16,6 +16,12 @@ const cleaning = {
       request
     );
   },
+  deleteMissingValue(request) {
+    return axios.post(
+      "/cleaning-api/missing-value/delete",
+      request
+    );
+  },
   pearsonCorrelation(request) {
     return axios.post(
       "/cleaning-api/pearson-correlation",
@@ -28,10 +34,12 @@ const cleaning = {
   mean(request) {
     return axios.post("/cleaning-api/mean", request);
   },
-  visualize(request, dateTimeColumn) {
+  visualize(request) {
+    return axios.post("/cleaning-api/visualize", request);
+  },
+  denoise(request, com) {
     return axios.post(
-      "/cleaning-api/visualize?date_time_column=" +
-        dateTimeColumn,
+      "/cleaning-api/denoise?com=" + com,
       request
     );
   },
