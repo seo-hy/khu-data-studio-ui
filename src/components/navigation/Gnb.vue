@@ -1,7 +1,7 @@
 <template>
   <div class="gnb">
     <router-link
-      :to="{ name: 'home' }"
+      :to="{ name: 'manage' }"
       class="title"
       @click.native="openMenu('home')"
     >
@@ -106,6 +106,10 @@ export default {
           {
             name: "noise",
             title: "노이즈 제거",
+          },
+          {
+            name: "history",
+            title: "전처리 이력",
           },
         ],
       },

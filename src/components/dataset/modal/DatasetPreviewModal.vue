@@ -19,14 +19,14 @@
               v-if="Object.keys(this.data).length !== 0"
             >
               <thead>
+                <th>
+                  {{ this.data.dateTimeColumn }}
+                </th>
                 <th
                   v-for="(col, i) in data.column"
                   :key="i"
                 >
                   {{ col.name }}
-                </th>
-                <th>
-                  {{ this.data.dateTimeColumn }}
                 </th>
               </thead>
               <tbody>

@@ -25,6 +25,9 @@ export default {
     LineChart,
     Spinner,
   },
+  computed: {
+    ...mapGetters("dataset", ["getSt", "getEt"]),
+  },
   data() {
     return {
       isLoading: true,
@@ -105,14 +108,12 @@ export default {
   methods: {
     ...mapActions("dataset", ["FETCH_DATA"]),
     ...mapActions("cleaning", ["VISUALIZE"]),
-    ...mapGetters("dataset", ["getSt", "getEt"]),
-
     getData() {
       this.isLoading = true;
       this.FETCH_DATA({
         datasetId: this.dataset.id,
-        st: this.getSt(),
-        et: this.getEt(),
+        st: this.getSt,
+        et: this.getEt,
       }).then((res) => {
         this.data = res;
         this.VISUALIZE({

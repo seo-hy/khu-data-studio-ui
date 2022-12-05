@@ -3,7 +3,7 @@
     <div class="table-container">
       <table>
         <thead>
-          <th>Name</th>
+          <th>데이터셋</th>
           <th>Action</th>
         </thead>
         <tbody>
@@ -184,7 +184,7 @@ td:first-child {
 }
 .action {
   padding: 0 20px;
-  min-width: 500px;
+  min-width: 620px;
 }
 .action button {
   height: 32px;

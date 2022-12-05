@@ -22,6 +22,18 @@ const cleaning = {
       request
     );
   },
+  interpolate(request) {
+    return axios.post(
+      "/cleaning-api/missing-value/interpolate",
+      request
+    );
+  },
+  predict(request) {
+    return axios.post(
+      "/cleaning-api/missing-value/predict",
+      request
+    );
+  },
   pearsonCorrelation(request) {
     return axios.post(
       "/cleaning-api/pearson-correlation",
@@ -37,9 +49,12 @@ const cleaning = {
   visualize(request) {
     return axios.post("/cleaning-api/visualize", request);
   },
-  denoise(request, com) {
+  denoise(request, com, datasetId) {
     return axios.post(
-      "/cleaning-api/denoise?com=" + com,
+      "/cleaning-api/denoise?com=" +
+        com +
+        "&datasetId=" +
+        datasetId,
       request
     );
   },

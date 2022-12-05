@@ -21,7 +21,7 @@
             가중치를 입력하세요. (1~100)
           </label>
           <input
-            type="text"
+            type="number"
             class="com-input"
             id="com"
             v-model="com"
@@ -70,7 +70,9 @@ export default {
     LineChart,
     Spinner,
   },
-  computed: {},
+  computed: {
+    ...mapGetters("dataset", ["getSt", "getEt"]),
+  },
   data() {
     return {
       isLoading: true,
@@ -79,6 +81,7 @@ export default {
       denoiseData: [],
       height: 200,
       com: 20,
+      historyColumns: "",
       msg: "",
       colorCnt: 0,
       error: false,
@@ -159,19 +162,25 @@ export default {
     };
   },
   methods: {
-    ...mapActions("dataset", ["FETCH_DATA"]),
+    ...mapActions("dataset", [
+      "FETCH_DATA",
+      "UPDATE_DATA",
+      "FETCH_DATASETS",
+      "SAVE_HISTORY",
+    ]),
     ...mapActions("cleaning", ["DENOISE", "VISUALIZE"]),
-    ...mapGetters("dataset", ["getSt", "getEt"]),
     getData() {
       this.msg = "";
+      this.error = false;
       this.isLoading = true;
       this.originLabels = [];
       this.originDatasets = [];
       this.chartData.datasets = [];
+      this.denoiseData = [];
       this.FETCH_DATA({
         datasetId: this.dataset.id,
-        st: this.getSt(),
-        et: this.getEt(),
+        st: this.getSt,
+        et: this.getEt,
       }).then((res) => {
         this.data = res;
         this.VISUALIZE({
@@ -208,7 +217,6 @@ export default {
     },
     denoise() {
       this.colorCnt = this.originDatasets.length;
-      console.log(this.colorCnt);
       this.error = false;
       this.msg = "";
       this.isLoading = true;
@@ -218,6 +226,7 @@ export default {
       this.DENOISE({
         request: request,
         com: this.com,
+        datasetId: this.dataset.id,
       })
         .then((res) => {
           this.denoiseData = res;
@@ -226,12 +235,12 @@ export default {
             dateTimeColumn: this.dataset.dateTimeColumn,
           }).then((res) => {
             for (
-              var i = 0;
-              i < this.denoiseData.column.length;
+              let i = 0;
+              i < this.denoiseData.denoiseColumn.length;
               i++
             ) {
-              var name =
-                this.denoiseData.column[i].name +
+              let name =
+                this.denoiseData.denoiseColumn[i].name +
                 "_denoised";
               this.colorCnt++;
               this.chartData.datasets.push({
@@ -249,9 +258,15 @@ export default {
                 borderWidth: 1,
                 hoverRadius: 1.2,
                 pointRadius: 0.7,
-                data: res[this.denoiseData.column[i].name],
+                data: res[
+                  this.denoiseData.denoiseColumn[i].name
+                ],
               });
             }
+
+            this.historyColumns = this.denoiseColList
+              .map((x) => x.name)
+              .join(",");
             this.isLoading = false;
           });
         })
@@ -261,7 +276,40 @@ export default {
           this.isLoading = false;
         });
     },
-    save() {},
+    save() {
+      this.isLoading = true;
+      this.msg = "";
+      this.error = false;
+      this.UPDATE_DATA({
+        datasetId: this.dataset.id,
+        data: this.denoiseData.data,
+      })
+        .then(() => {
+          let historyRequest = {
+            name: "노이즈 제거",
+            detail: {
+              com: Number(this.com),
+              columns: this.historyColumns,
+            },
+            startDate: this.getSt,
+            endDate: this.getEt,
+          };
+          this.SAVE_HISTORY({
+            datasetId: this.dataset.id,
+            request: historyRequest,
+          }).then(() => {
+            this.msg = "저장 완료되었습니다.";
+            this.FETCH_DATASETS();
+          });
+          this.getData();
+        })
+        .catch((err) => {
+          this.msg =
+            err.response.data.message.slice(0, 40) + "...";
+          this.error = true;
+          this.isLoading = false;
+        });
+    },
   },
   created() {
     this.getData();

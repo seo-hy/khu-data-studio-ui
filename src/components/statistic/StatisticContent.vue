@@ -112,6 +112,13 @@ export default {
   components: {
     Spinner,
   },
+  computed: {
+    ...mapGetters("dataset", ["getSt", "getEt"]),
+    isLoadingStat() {
+      return this.isLoadingMean && this.isLoadingStd;
+    },
+  },
+
   data() {
     return {
       data: [],
@@ -132,12 +139,11 @@ export default {
       "STD",
       "MEAN",
     ]),
-    ...mapGetters("dataset", ["getSt", "getEt"]),
     getData() {
       return this.FETCH_DATA({
         datasetId: this.dataset.id,
-        st: this.getSt(),
-        et: this.getEt(),
+        st: this.getSt,
+        et: this.getEt,
       }).then((res) => {
         this.data = res;
       });
@@ -147,6 +153,7 @@ export default {
       this.PEARSON_CORRELATION({
         request: this.data,
       }).then((res) => {
+        console.log(res);
         this.pearson = res;
         this.isLoadingPearson = false;
       });
@@ -197,11 +204,6 @@ export default {
         this.getStd();
         this.getPearsonCorrelation();
       });
-    },
-  },
-  computed: {
-    isLoadingStat() {
-      return this.isLoadingMean && this.isLoadingStd;
     },
   },
 };
