@@ -55,7 +55,10 @@ export default {
     };
   },
   methods: {
-    ...mapActions("dataset", ["FETCH_DATASET"]),
+    ...mapActions("dataset", [
+      "FETCH_DATASET",
+      "FETCH_DATASETS",
+    ]),
     closeDatasetSelectModal(datasetId) {
       this.showDatasetSelectModal = false;
       this.datasetId = datasetId;
@@ -71,6 +74,9 @@ export default {
     selectPeriod(timestamp) {
       this.changeDate = timestamp;
     },
+  },
+  created() {
+    this.FETCH_DATASETS();
   },
 };
 </script>

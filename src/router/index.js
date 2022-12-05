@@ -6,6 +6,7 @@ import Visualize from "@/views/status/Visualize";
 import Statistic from "@/views/status/Statistic";
 import MissingValue from "@/views/preprocessing/MissingValue";
 import Noise from "@/views/preprocessing/Noise";
+import History from "@/views/preprocessing/History";
 
 Vue.use(VueRouter);
 
@@ -39,6 +40,11 @@ const routes = [
     path: "/preprocessing/noise",
     name: "noise",
     component: Noise,
+  },
+  {
+    path: "/preprocessing/history",
+    name: "history",
+    component: History,
   },
 ];
 const router = new VueRouter({

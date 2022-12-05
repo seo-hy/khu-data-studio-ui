@@ -9,19 +9,25 @@
         <table>
           <thead>
             <th>
-              {{ data.dateTimeColumn }}
+              {{ missingValueData.dateTimeColumn }}
             </th>
-            <th v-for="(col, i) in data.column" :key="i">
+            <th
+              v-for="(col, i) in missingValueData.column"
+              :key="i"
+            >
               {{ col.name }}
             </th>
           </thead>
           <tbody>
-            <tr v-for="(row, i) in data.data" :key="i">
+            <tr
+              v-for="(row, i) in missingValueData.data"
+              :key="i"
+            >
               <td class="datetime-td">
                 {{ row.date }}
               </td>
               <td
-                v-for="(col, j) in data.column"
+                v-for="(col, j) in missingValueData.column"
                 :key="j"
                 :class="{ 'na-td': isNaIdx(i, j) }"
               >
@@ -48,13 +54,17 @@
           </option>
         </select>
         <div class="btn-container">
-          <button class="restore-btn" @click="findNa">
-            복원
-          </button>
-          <button class="run-btn" @click="run">수행</button>
-          <button class="save-btn" @click="save">
-            저장
-          </button>
+          <div>
+            <button class="run-btn" @click="run">
+              수행
+            </button>
+            <button class="save-btn" @click="save">
+              저장
+            </button>
+          </div>
+          <div class="msg" :class="{ 'error-msg': error }">
+            {{ msg }}
+          </div>
         </div>
       </div>
     </div>
@@ -62,24 +72,28 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import Spinner from "@/components/common/Spinner";
 export default {
-  props: ["datasetId"],
+  props: ["dataset", "changeDate"],
   components: {
     Spinner,
   },
+  computed: {
+    ...mapGetters("dataset", ["getSt", "getEt"]),
+  },
   data() {
     return {
-      data: [],
+      missingValueData: {},
       saveData: [],
       deleteDate: [],
-      originData: [],
-      originDataNa: [],
+      data: [],
       isLoading: true,
       naIdxList: [],
       selectedMethod: "0",
-      idxCol: "created_at",
+      saveMethod: "",
+      msg: "",
+      error: false,
       methods: [
         {
           text: "VAR모델 기반 예측값으로 대체",
@@ -98,46 +112,62 @@ export default {
   },
   methods: {
     ...mapActions("dataset", [
-      "FETCH_ALL_DATA",
+      "FETCH_DATA",
       "UPDATE_DATA",
+      "DELETE_DATA_BY_DATE",
+      "SAVE_HISTORY",
+      "FETCH_DATASETS",
     ]),
     ...mapActions("cleaning", [
       "FIND_NA",
       "RUN_NA",
       "DELETE_MISSING_VALUE",
+      "INTERPOLATE",
+      "PREDICT",
     ]),
+
     findNa() {
+      this.saveMethod = "";
+      this.msg = "";
+      this.error = false;
       this.isLoading = true;
-      this.FETCH_ALL_DATA({
-        datasetId: this.datasetId,
+      this.FETCH_DATA({
+        datasetId: this.dataset.id,
+        st: this.getSt,
+        et: this.getEt,
       }).then((res) => {
-        this.originData = res;
+        this.data = res;
         this.FIND_NA({
           request: res,
-        }).then((res) => {
-          this.saveData = res;
-          this.data = res;
-          this.originDataNa = res;
-          this.isLoading = false;
-          this.updateNaIdx();
-        });
+        })
+          .then((res) => {
+            this.saveData = res;
+            this.missingValueData = res;
+            this.isLoading = false;
+            this.updateNaIdx();
+          })
+          .catch((err) => {
+            this.msg = err.response.data.detail;
+            this.error = true;
+            this.isLoading = false;
+          });
       });
     },
     updateNaIdx() {
       this.naIdxList = [];
       for (
         var i = 0;
-        i < this.originDataNa.data.length;
+        i < this.missingValueData.data.length;
         i++
       ) {
         for (
           var j = 0;
-          j < this.originDataNa.column.length;
+          j < this.missingValueData.column.length;
           j++
         ) {
           if (
-            this.originDataNa.data[i].value[
-              this.originDataNa.column[j].name
+            this.missingValueData.data[i].value[
+              this.missingValueData.column[j].name
             ] === null
           ) {
             this.naIdxList.push({ i, j });
@@ -151,24 +181,53 @@ export default {
       );
       return isContain.length > 0;
     },
-    restore() {
-      this.isLoading = true;
-      this.data = this.originDataNa;
-      this.isLoading = false;
-    },
+
     run() {
+      this.msg = "";
+      this.error = false;
       this.deleteDate = [];
       this.isLoading = true;
-      if (this.selectedMethod === "2") {
+      if (this.selectedMethod === "0") {
+        this.PREDICT({ request: this.data })
+          .then((res) => {
+            this.missingValueData = res;
+            this.saveData = res;
+            this.saveMethod = this.selectedMethod;
+            this.isLoading = false;
+          })
+          .catch((err) => {
+            this.msg = err.response.data.detail;
+            this.error = true;
+            this.isLoading = false;
+          });
+      } else if (this.selectedMethod === "1") {
+        this.INTERPOLATE({ request: this.data })
+          .then((res) => {
+            this.missingValueData = res;
+            this.saveData = res;
+            this.saveMethod = this.selectedMethod;
+            this.isLoading = false;
+          })
+          .catch((err) => {
+            this.msg = err.response.data.detail;
+            this.error = true;
+            this.isLoading = false;
+          });
+      } else if (this.selectedMethod === "2") {
         this.DELETE_MISSING_VALUE({
-          request: this.originData,
-        }).then((res) => {
-          console.log(res);
-
-          this.data = res.run;
-          this.deleteDate = res.deleteDate;
-          this.isLoading = false;
-        });
+          request: this.data,
+        })
+          .then((res) => {
+            this.missingValueData = res.run;
+            this.deleteDate = res.deleteDate;
+            this.saveMethod = this.selectedMethod;
+            this.isLoading = false;
+          })
+          .catch((err) => {
+            this.msg = err.response.data.detail;
+            this.error = true;
+            this.isLoading = false;
+          });
       }
       // this.RUN_NA({
       //   method: this.selectedMethod,
@@ -181,17 +240,108 @@ export default {
       // });
     },
     save() {
+      this.msg = "";
+      this.error = false;
       this.isLoading = true;
-      this.UPDATE_DATA({
-        datasetId: this.datasetId,
-        request: this.saveData,
-      }).then(() => {
-        this.findNa();
-      });
+      if (this.saveMethod === "0") {
+        this.UPDATE_DATA({
+          datasetId: this.dataset.id,
+          data: this.saveData.data,
+        })
+          .then(() => {
+            let historyRequest = {
+              name: "결측치 처리",
+              detail: {
+                method: "VAR모델 기반 예측값으로 대체",
+              },
+              startDate: this.getSt,
+              endDate: this.getEt,
+            };
+            this.SAVE_HISTORY({
+              datasetId: this.dataset.id,
+              request: historyRequest,
+            }).then(() => {
+              this.FETCH_DATASETS();
+              this.findNa();
+              this.msg = "저장 완료되었습니다.";
+            });
+          })
+          .catch((err) => {
+            this.msg = err.response.data.message;
+            this.error = true;
+            this.isLoading = false;
+          });
+      } else if (this.saveMethod === "1") {
+        this.UPDATE_DATA({
+          datasetId: this.dataset.id,
+          data: this.saveData.data,
+        })
+          .then(() => {
+            let historyRequest = {
+              name: "결측치 처리",
+              detail: {
+                method: "전,후 데이터 평균값으로 대체",
+              },
+              startDate: this.getSt,
+              endDate: this.getEt,
+            };
+            this.SAVE_HISTORY({
+              datasetId: this.dataset.id,
+              request: historyRequest,
+            }).then(() => {
+              this.FETCH_DATASETS();
+              this.findNa();
+              this.msg = "저장 완료되었습니다.";
+            });
+          })
+          .catch((err) => {
+            this.msg = err.response.data.message;
+            this.error = true;
+            this.isLoading = false;
+          });
+      } else if (this.saveMethod === "2") {
+        this.DELETE_DATA_BY_DATE({
+          datasetId: this.dataset.id,
+          dateList: this.deleteDate,
+        })
+          .then(() => {
+            let historyRequest = {
+              name: "결측치 처리",
+              detail: {
+                method: "결측치 포함 행 제거",
+              },
+              startDate: this.getSt,
+              endDate: this.getEt,
+            };
+            this.SAVE_HISTORY({
+              datasetId: this.dataset.id,
+              request: historyRequest,
+            }).then(() => {
+              this.FETCH_DATASETS();
+
+              this.findNa();
+              this.msg = "저장 완료되었습니다.";
+            });
+          })
+          .catch((err) => {
+            this.msg = err.response.data.message;
+            this.error = true;
+            this.isLoading = false;
+          });
+      } else {
+        this.msg = "Run before save";
+        this.error = true;
+        this.isLoading = false;
+      }
     },
   },
   created() {
     this.findNa();
+  },
+  watch: {
+    changeDate: function () {
+      this.findNa();
+    },
   },
 };
 </script>
@@ -247,8 +397,8 @@ td {
   border: 0.8px solid rgba(109, 109, 109, 0.306);
   background-color: rgba(255, 255, 255, 0.014);
   border-radius: 15px;
-  min-width: 250px;
-  width: 250px;
+  min-width: 200px;
+  width: 220px;
   margin-left: 10px;
 }
 .spinner {
@@ -261,24 +411,27 @@ td {
 .method-select {
   background-color: rgb(39, 39, 39);
   color: #e8e8e8;
-  font-size: 16px;
+  font-size: 15px;
   padding: 10px;
 }
 .btn-container {
-  width: 250px;
-  padding-right: 20px;
-  display: flex;
-  justify-content: space-around;
+  width: 240px;
   position: absolute;
   bottom: 0;
-  margin-bottom: 20px;
+  right: 0;
+  margin-bottom: 10px;
 }
+.btn-container > div:first-child {
+  display: flex;
+  justify-content: center;
+}
+
 .btn-container button {
   width: 70px;
   font-size: 18px;
   height: 30px;
   font-size: 17px;
-  margin: 0 5px;
+  margin: 0 15px;
   border-radius: 5px;
   color: #e8e8e8;
   font-weight: 400;
@@ -287,7 +440,6 @@ td {
   transition: all 0.5s;
 }
 
-.restore-btn,
 .run-btn {
   background-color: #373737;
 }
@@ -309,5 +461,18 @@ td {
   background-color: #2c2c2c;
   border: none;
   min-width: 156px;
+}
+.msg {
+  height: 15px;
+  color: #3f8ae2;
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 14px;
+  font-weight: 300;
+  text-align: center;
+  margin: 0 5px;
+}
+.error-msg {
+  color: rgb(210, 29, 29);
 }
 </style>

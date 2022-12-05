@@ -1,17 +1,21 @@
 <template>
   <div class="main">
     <div class="header">
-      <div class="title">결측치 처리</div>
-      <SelectedData
-        v-if="showData"
-        :datasetId="datasetId"
-        @changeDataset="changeDataset"
-      />
+      <div>
+        <div class="title">결측치 처리</div>
+        <SelectedData
+          v-if="showContent"
+          :datasetId="datasetId"
+          @changeDataset="changeDataset"
+        />
+      </div>
+      <SelectPeriod @selectPeriod="selectPeriod" />
     </div>
     <div class="content">
       <MissingValueControl
-        v-if="showData"
-        :datasetId="datasetId"
+        v-if="showContent"
+        :dataset="dataset"
+        :changeDate="changeDate"
       />
     </div>
     <DatasetSelectModal
@@ -32,30 +36,48 @@
 import SelectedData from "@/components/common/SelectedData";
 import DatasetSelectModal from "@/components/common/DatasetSelectModal";
 import MissingValueControl from "@/components/preprocessing/MissingValueControl";
+import SelectPeriod from "@/components/common/SelectPeriod";
 
+import { mapActions } from "vuex";
 export default {
   components: {
     DatasetSelectModal,
     MissingValueControl,
     SelectedData,
+    SelectPeriod,
   },
   data() {
     return {
       showDatasetSelectModal: true,
       datasetId: 0,
-      showData: false,
+      dataset: {},
+      showContent: false,
+      changeDate: "",
     };
   },
   methods: {
+    ...mapActions("dataset", [
+      "FETCH_DATASET",
+      "FETCH_DATASETS",
+    ]),
     closeDatasetSelectModal(datasetId) {
       this.showDatasetSelectModal = false;
       this.datasetId = datasetId;
-      this.showData = true;
+      this.FETCH_DATASET(this.datasetId).then((res) => {
+        this.dataset = res;
+        this.showContent = true;
+      });
     },
     changeDataset() {
       this.showDatasetSelectModal = true;
       this.showData = false;
     },
+    selectPeriod(timestamp) {
+      this.changeDate = timestamp;
+    },
+  },
+  created() {
+    this.FETCH_DATASETS();
   },
 };
 </script>
@@ -65,19 +87,24 @@ export default {
   width: calc(100% - 220px);
 }
 .header {
-  padding-left: 20px;
+  padding: 0 30px;
   display: flex;
   align-items: center;
-  height: 70px;
+  justify-content: space-between;
+
+  height: 90px;
+}
+.header > div:first-child {
+  display: flex;
+  align-items: center;
 }
 .title {
   color: #bcbcbc;
   font-size: 25px;
-  line-height: 70px;
 }
 .content {
   width: 95%;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 110px);
   background-color: #1e1e1e;
   border-radius: 10px;
   margin: 20px auto;

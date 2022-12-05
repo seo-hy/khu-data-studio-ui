@@ -9,7 +9,6 @@ const dataset = {
     username,
     password,
     table,
-    dateTimeColumn,
   }) {
     return axios.post("/dataset-api/datasets/database", {
       name,
@@ -19,15 +18,13 @@ const dataset = {
       username,
       password,
       table,
-      dateTimeColumn,
     });
   },
-  saveWithCsv({ name, dateTimeColumn, csv }) {
+  saveWithCsv({ name, csv }) {
     let formData = new FormData();
     formData.append("csv", csv);
     let request = {
       name,
-      dateTimeColumn,
     };
     formData.append(
       "request",
@@ -47,7 +44,6 @@ const dataset = {
     username,
     password,
     table,
-    dateTimeColumn,
   }) {
     return axios.post(
       "/dataset-api/datasets/preview/database",
@@ -58,22 +54,13 @@ const dataset = {
         username,
         password,
         table,
-        dateTimeColumn,
       }
     );
   },
-  previewWithCsv({ dateTimeColumn, csv }) {
+  previewWithCsv({ csv }) {
     let formData = new FormData();
     formData.append("csv", csv);
-    let request = {
-      dateTimeColumn,
-    };
-    formData.append(
-      "request",
-      new Blob([JSON.stringify(request)], {
-        type: "application/json",
-      })
-    );
+
     return axios.post(
       "/dataset-api/datasets/preview/csv",
       formData
@@ -118,7 +105,6 @@ const dataset = {
     username,
     password,
     table,
-    dateTimeColumn,
   }) {
     return axios.put(
       "/dataset-api/datasets/" +
@@ -131,32 +117,46 @@ const dataset = {
         username,
         password,
         table,
-        dateTimeColumn,
       }
     );
   },
-  updateWithCsv({ datasetId, dateTimeColumn, csv }) {
+  updateWithCsv({ datasetId, csv }) {
     let formData = new FormData();
     formData.append("csv", csv);
-    let request = {
-      dateTimeColumn,
-    };
-    formData.append(
-      "request",
-      new Blob([JSON.stringify(request)], {
-        type: "application/json",
-      })
-    );
+
     return axios.put(
       "/dataset-api/datasets/" + datasetId + "/data/csv",
       formData
     );
   },
 
-  updateData(datasetId, request) {
+  updateData({ datasetId, data }) {
     return axios.put(
       "/dataset-api/datasets/" + datasetId + "/data",
+      data
+    );
+  },
+  deleteDataByDate({ datasetId, dateList }) {
+    return axios.delete(
+      "/dataset-api/datasets/" + datasetId + "/data",
+      {
+        data: dateList,
+      }
+    );
+  },
+
+  saveHistory({ datasetId, request }) {
+    return axios.post(
+      "/dataset-api/datasets/" + datasetId + "/history",
       request
+    );
+  },
+  getHistory() {
+    return axios.get("/dataset-api/datasets/history");
+  },
+  getHistoryByDatasetId({ datasetId }) {
+    return axios.get(
+      "/dataset-api/datasets/" + datasetId + "/history"
     );
   },
 };

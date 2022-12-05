@@ -110,17 +110,6 @@
                     v-model="table"
                   />
                 </div>
-                <div>
-                  <label for="dateTimeColumn"
-                    >Datetime Column</label
-                  >
-                  <input
-                    type="text"
-                    id="dateTimeColumn"
-                    autocomplete="off"
-                    v-model="dateTimeColumn"
-                  />
-                </div>
               </div>
             </div>
             <div
@@ -135,19 +124,6 @@
                     id="name"
                     autocomplete="off"
                     v-model="name"
-                  />
-                </div>
-              </div>
-              <div class="input">
-                <div class="large-input">
-                  <label for="dateTimeColumn"
-                    >Datetime Column</label
-                  >
-                  <input
-                    type="text"
-                    id="dateTimeColumn"
-                    autocomplete="off"
-                    v-model="dateTimeColumn"
                   />
                 </div>
               </div>
@@ -255,7 +231,6 @@ export default {
       username: "seohyun",
       password: "seohyun123",
       table: "hr_sensor_dataset",
-      dateTimeColumn: "created_at",
       csv: "",
       selected: 0,
       methodList: [
@@ -312,7 +287,6 @@ export default {
           username: this.username,
           password: this.password,
           table: this.table,
-          dateTimeColumn: this.dateTimeColumn,
         })
           .then(() => {
             this.FETCH_DATASETS().then(() => {
@@ -326,7 +300,6 @@ export default {
       } else {
         this.SAVE_DATASET_WITH_CSV({
           name: this.name,
-          dateTimeColumn: this.dateTimeColumn,
           csv: this.csv,
         })
           .then(() => {
@@ -362,7 +335,6 @@ export default {
       this.password = "";
       this.db = "";
       this.table = "";
-      this.dateTimeColumn = "";
     },
 
     preview() {
@@ -379,7 +351,6 @@ export default {
           username: this.username,
           password: this.password,
           table: this.table,
-          dateTimeColumn: this.dateTimeColumn,
         })
           .then((res) => {
             this.data = res;
@@ -394,7 +365,6 @@ export default {
           });
       } else {
         this.PREVIEW_WITH_CSV({
-          dateTimeColumn: this.dateTimeColumn,
           csv: this.csv,
         })
           .then((res) => {

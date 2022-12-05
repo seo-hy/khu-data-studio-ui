@@ -50,8 +50,20 @@ const actions = {
         return res.data;
       });
   },
-  DENOISE(context, { request, com }) {
-    return cleaning.denoise(request, com).then((res) => {
+  DENOISE(context, { request, com, datasetId }) {
+    return cleaning
+      .denoise(request, com, datasetId)
+      .then((res) => {
+        return res.data;
+      });
+  },
+  INTERPOLATE(context, { request }) {
+    return cleaning.interpolate(request).then((res) => {
+      return res.data;
+    });
+  },
+  PREDICT(context, { request }) {
+    return cleaning.predict(request).then((res) => {
       return res.data;
     });
   },

@@ -11,7 +11,13 @@
             <div class="table-container">
               <table>
                 <thead>
-                  <th>Name</th>
+                  <th>데이터셋</th>
+                  <th class="history-th">
+                    최근 결측치 처리 이력
+                  </th>
+                  <th class="history-th">
+                    최근 노이즈 제거 이력
+                  </th>
                 </thead>
                 <tbody>
                   <tr
@@ -27,6 +33,59 @@
                     <td class="name">
                       {{ dataset.name }}
                     </td>
+                    <template>
+                      <td
+                        class="history-td"
+                        v-if="
+                          dataset.historyMissingValue !==
+                          null
+                        "
+                      >
+                        <span class="history-td-desc"
+                          >처리방법 :
+                        </span>
+
+                        {{
+                          dataset.historyMissingValue.method
+                        }}
+
+                        <br />
+
+                        <span class="history-td-desc">
+                          수행일시 :
+                        </span>
+                        {{
+                          formatDate(
+                            dataset.historyMissingValue
+                              .createdDate
+                          )
+                        }}
+                      </td>
+                      <td v-else>-</td>
+                    </template>
+                    <template>
+                      <td
+                        class="history-td"
+                        v-if="dataset.historyNoise !== null"
+                      >
+                        <span class="history-td-desc"
+                          >가중치 :
+                        </span>
+                        {{ dataset.historyNoise.com }}
+
+                        <br />
+
+                        <span class="history-td-desc"
+                          >수행일시 :
+                        </span>
+                        {{
+                          formatDate(
+                            dataset.historyNoise.createdDate
+                          )
+                        }}
+                      </td>
+                      <td v-else>-</td>
+                    </template>
                   </tr>
                 </tbody>
               </table>
@@ -51,7 +110,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   props: ["datasetId"],
   data() {
@@ -60,6 +119,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions("dataset", ["FETCH_DATASETS"]),
     close() {
       this.$emit("close", this.selected);
     },
@@ -67,14 +127,19 @@ export default {
       this.selected = id;
     },
     cancel() {
-      this.$router.push({ name: "home" });
+      this.$router.push({ name: "manage" });
+    },
+    formatDate(createdDate) {
+      let date = createdDate.slice(0, 10);
+      let time = createdDate.slice(11, 19);
+      return date + " " + time;
     },
   },
   computed: {
     ...mapGetters("dataset", ["getDatasets"]),
   },
   created() {
-    this.selected = this.datasetId;
+    this.FETCH_DATASETS();
   },
 };
 </script>
@@ -98,7 +163,7 @@ export default {
 }
 
 .modal-container {
-  width: 500px;
+  width: 900px;
   height: 400px;
   margin: 0px auto;
   color: #e8e8e8;
@@ -187,6 +252,9 @@ th {
   background-color: #2c2c2c;
   width: 400px;
 }
+.history-th {
+  min-width: 130px;
+}
 tr {
   cursor: pointer;
 }
@@ -200,5 +268,17 @@ td {
 
 .selected {
   background-color: #3f8ae2;
+}
+.history-td {
+  padding-left: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: left;
+  font-size: 15px;
+}
+
+.history-td-desc {
+  font-size: 13px;
+  color: rgb(213, 172, 49);
 }
 </style>
