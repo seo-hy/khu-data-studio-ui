@@ -203,12 +203,12 @@ export default {
     return {
       isLoading: false,
       dataSource: 0,
-      host: "13.209.8.19",
-      port: "3306",
-      db: "smartplant",
-      username: "seohyun",
-      password: "seohyun123",
-      table: "hr_sensor_dataset",
+      host: "",
+      port: "",
+      db: "",
+      username: "",
+      password: "",
+      table: "",
       csv: "",
       selected: 0,
       methodList: [

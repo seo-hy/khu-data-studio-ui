@@ -230,7 +230,7 @@ export default {
       db: "smartplant",
       username: "seohyun",
       password: "seohyun123",
-      table: "hr_sensor_dataset",
+      table: "hr_sensor_data",
       csv: "",
       selected: 0,
       methodList: [
