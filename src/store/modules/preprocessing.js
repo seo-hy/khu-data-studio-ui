@@ -1,4 +1,4 @@
-import cleaning from "@/api/cleaning";
+import preprocessing from "@/api/preprocessing";
 
 const state = {};
 
@@ -8,62 +8,64 @@ const mutations = {};
 
 const actions = {
   FIND_NA(context, { request }) {
-    return cleaning.find(request).then((res) => {
+    return preprocessing.find(request).then((res) => {
       return res.data;
     });
   },
   RUN_NA(context, { method, idxCol, request }) {
-    return cleaning
+    return preprocessing
       .run(method, idxCol, request)
       .then((res) => {
         return res.data;
       });
   },
   DELETE_MISSING_VALUE(context, { request }) {
-    return cleaning
+    return preprocessing
       .deleteMissingValue(request)
       .then((res) => {
         return res.data;
       });
   },
   PEARSON_CORRELATION(context, { request }) {
-    return cleaning
+    return preprocessing
       .pearsonCorrelation(request)
       .then((res) => {
         return res.data;
       });
   },
   STD(context, { request }) {
-    return cleaning.std(request).then((res) => {
+    return preprocessing.std(request).then((res) => {
       return res.data;
     });
   },
   MEAN(context, { request }) {
-    return cleaning.mean(request).then((res) => {
+    return preprocessing.mean(request).then((res) => {
       return res.data;
     });
   },
   VISUALIZE(context, { request, dateTimeColumn }) {
-    return cleaning
+    return preprocessing
       .visualize(request, dateTimeColumn)
       .then((res) => {
         return res.data;
       });
   },
   DENOISE(context, { request, com, datasetId }) {
-    return cleaning
+    return preprocessing
       .denoise(request, com, datasetId)
       .then((res) => {
         return res.data;
       });
   },
   INTERPOLATE(context, { request }) {
-    return cleaning.interpolate(request).then((res) => {
-      return res.data;
-    });
+    return preprocessing
+      .interpolate(request)
+      .then((res) => {
+        return res.data;
+      });
   },
   PREDICT(context, { request }) {
-    return cleaning.predict(request).then((res) => {
+    return preprocessing.predict(request).then((res) => {
       return res.data;
     });
   },

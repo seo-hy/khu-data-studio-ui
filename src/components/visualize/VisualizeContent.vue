@@ -107,7 +107,7 @@ export default {
   },
   methods: {
     ...mapActions("dataset", ["FETCH_DATA"]),
-    ...mapActions("cleaning", ["VISUALIZE"]),
+    ...mapActions("preprocessing", ["VISUALIZE"]),
     getData() {
       this.isLoading = true;
       this.FETCH_DATA({

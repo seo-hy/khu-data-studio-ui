@@ -168,7 +168,10 @@ export default {
       "FETCH_DATASETS",
       "SAVE_HISTORY",
     ]),
-    ...mapActions("cleaning", ["DENOISE", "VISUALIZE"]),
+    ...mapActions("preprocessing", [
+      "DENOISE",
+      "VISUALIZE",
+    ]),
     getData() {
       this.msg = "";
       this.error = false;

@@ -1,15 +1,15 @@
 import axios from "axios";
 
-const cleaning = {
+const preprocessing = {
   find(request) {
     return axios.post(
-      "/cleaning-api/missing-value/find",
+      "/preprocessing-api/missing-value/find",
       request
     );
   },
   run(method, idxCol, request) {
     return axios.post(
-      "/cleaning-api/missing-value/run?method=" +
+      "/preprocessing-api/missing-value/run?method=" +
         method +
         "&idx_col=" +
         idxCol,
@@ -18,40 +18,43 @@ const cleaning = {
   },
   deleteMissingValue(request) {
     return axios.post(
-      "/cleaning-api/missing-value/delete",
+      "/preprocessing-api/missing-value/delete",
       request
     );
   },
   interpolate(request) {
     return axios.post(
-      "/cleaning-api/missing-value/interpolate",
+      "/preprocessing-api/missing-value/interpolate",
       request
     );
   },
   predict(request) {
     return axios.post(
-      "/cleaning-api/missing-value/predict",
+      "/preprocessing-api/missing-value/predict",
       request
     );
   },
   pearsonCorrelation(request) {
     return axios.post(
-      "/cleaning-api/pearson-correlation",
+      "/preprocessing-api/pearson-correlation",
       request
     );
   },
   std(request) {
-    return axios.post("/cleaning-api/std", request);
+    return axios.post("/preprocessing-api/std", request);
   },
   mean(request) {
-    return axios.post("/cleaning-api/mean", request);
+    return axios.post("/preprocessing-api/mean", request);
   },
   visualize(request) {
-    return axios.post("/cleaning-api/visualize", request);
+    return axios.post(
+      "/preprocessing-api/visualize",
+      request
+    );
   },
   denoise(request, com, datasetId) {
     return axios.post(
-      "/cleaning-api/denoise?com=" +
+      "/preprocessing-api/denoise?com=" +
         com +
         "&datasetId=" +
         datasetId,
@@ -60,4 +63,4 @@ const cleaning = {
   },
 };
 
-export default cleaning;
+export default preprocessing;
