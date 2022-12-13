@@ -10,15 +10,18 @@ const dataset = {
     password,
     table,
   }) {
-    return axios.post("/dataset-api/datasets/database", {
-      name,
-      host,
-      port,
-      db,
-      username,
-      password,
-      table,
-    });
+    return axios.post(
+      "http://localhost:8082/dataset-api/datasets/database",
+      {
+        name,
+        host,
+        port,
+        db,
+        username,
+        password,
+        table,
+      }
+    );
   },
   saveWithCsv({ name, csv }) {
     let formData = new FormData();
@@ -33,7 +36,7 @@ const dataset = {
       })
     );
     return axios.post(
-      "/dataset-api/datasets/csv",
+      "http://localhost:8082/dataset-api/datasets/csv",
       formData
     );
   },
@@ -46,7 +49,7 @@ const dataset = {
     table,
   }) {
     return axios.post(
-      "/dataset-api/datasets/preview/database",
+      "http://localhost:8082/dataset-api/datasets/preview/database",
       {
         host,
         port,
@@ -62,34 +65,46 @@ const dataset = {
     formData.append("csv", csv);
 
     return axios.post(
-      "/dataset-api/datasets/preview/csv",
+      "http://localhost:80808200/dataset-api/datasets/preview/csv",
       formData
     );
   },
   get(datasetId) {
-    return axios.get("/dataset-api/datasets/" + datasetId);
+    return axios.get(
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId
+    );
   },
   getList() {
-    return axios.get("/dataset-api/datasets");
+    return axios.get(
+      "http://localhost:8082/dataset-api/datasets"
+    );
   },
   update({ datasetId, name }) {
-    return axios.put("/dataset-api/datasets/" + datasetId, {
-      name,
-    });
+    return axios.put(
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId,
+      {
+        name,
+      }
+    );
   },
   delete(datasetId) {
     return axios.delete(
-      "/dataset-api/datasets/" + datasetId
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId
     );
   },
   previewData({ datasetId }) {
     return axios.get(
-      "/dataset-api/datasets/" + datasetId + "/data/preview"
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId +
+        "/data/preview"
     );
   },
   getData(datasetId, st, et) {
     return axios.get(
-      "/dataset-api/datasets/" +
+      "http://localhost:8082/dataset-api/datasets/" +
         datasetId +
         "/data?st=" +
         st +
@@ -107,7 +122,7 @@ const dataset = {
     table,
   }) {
     return axios.put(
-      "/dataset-api/datasets/" +
+      "http://localhost:8082/dataset-api/datasets/" +
         datasetId +
         "/data/database",
       {
@@ -125,20 +140,26 @@ const dataset = {
     formData.append("csv", csv);
 
     return axios.put(
-      "/dataset-api/datasets/" + datasetId + "/data/csv",
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId +
+        "/data/csv",
       formData
     );
   },
 
   updateData({ datasetId, data }) {
     return axios.put(
-      "/dataset-api/datasets/" + datasetId + "/data",
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId +
+        "/data",
       data
     );
   },
   deleteDataByDate({ datasetId, dateList }) {
     return axios.delete(
-      "/dataset-api/datasets/" + datasetId + "/data",
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId +
+        "/data",
       {
         data: dateList,
       }
@@ -147,16 +168,22 @@ const dataset = {
 
   saveHistory({ datasetId, request }) {
     return axios.post(
-      "/dataset-api/datasets/" + datasetId + "/history",
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId +
+        "/history",
       request
     );
   },
   getHistory() {
-    return axios.get("/dataset-api/datasets/history");
+    return axios.get(
+      "http://localhost:8082/dataset-api/datasets/history"
+    );
   },
   getHistoryByDatasetId({ datasetId }) {
     return axios.get(
-      "/dataset-api/datasets/" + datasetId + "/history"
+      "http://localhost:8082/dataset-api/datasets/" +
+        datasetId +
+        "/history"
     );
   },
 };
